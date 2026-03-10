@@ -1,0 +1,169 @@
+
+import 'package:buraq_enterprise_admin/core/config/colors/app_color_scheme.dart';
+import 'package:buraq_enterprise_admin/core/config/extensions/app_colors_extension.dart';
+import 'package:buraq_enterprise_admin/core/constants/app_constants.dart';
+import 'package:buraq_enterprise_admin/core/constants/app_enum.dart';
+import 'package:buraq_enterprise_admin/utils/app_util.dart';
+import 'package:buraq_enterprise_admin/utils/widgets/app_text.dart';
+import 'package:flutter/material.dart';
+import 'package:get/get_state_manager/src/rx_flutter/rx_obx_widget.dart';
+import 'package:google_fonts/google_fonts.dart';
+
+class AppTextField extends StatelessWidget {
+  final TextFieldType type;
+  final TextEditingController controller;
+  final bool? autoFocus;
+  final String? labelText;
+  final bool? obscureText;
+  final Icon? prefixIcon;
+  final Widget? suffixIcon;
+  final double? paddingHorizontal;
+  final double? paddingVertical;
+  final String? hintText;
+  final TextAlign? textAlign;
+  final double? borderRadius;
+  final int? maxLength;
+  final String? counterText;
+  final FontWeight? fontWeight;
+  final Function(String value)? onTextChangeCallBack;
+  final FocusNode? focusNode;
+
+  const AppTextField({
+    super.key,
+    this.type = TextFieldType.text,
+    required this.controller,
+    this.labelText,
+    this.hintText,
+
+    this.obscureText,
+    this.prefixIcon,
+    this.suffixIcon,
+    this.onTextChangeCallBack,
+    this.autoFocus,
+    this.paddingHorizontal,
+    this.paddingVertical,
+    this.textAlign,
+    this.borderRadius,
+    this.maxLength,
+    this.counterText,
+    this.fontWeight,
+    this.focusNode,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final TextInputType keyBoardType;
+
+    switch (type) {
+      case TextFieldType.email:
+        keyBoardType = TextInputType.emailAddress;
+        break;
+      case TextFieldType.otp:
+        keyBoardType = TextInputType.number;
+
+      case TextFieldType.phoneNumber:
+        keyBoardType = TextInputType.phone;
+      default:
+        keyBoardType = TextInputType.text;
+    }
+
+    return Obx(() {
+      final AppColorScheme appColorScheme = context.appColors;
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          if (labelText != null) AppTextBody(text: labelText!, fontSize: 14),
+          if (labelText != null) const SizedBox(height: 5),
+
+          TextFormField(
+            textAlign: textAlign ?? TextAlign.start,
+            autofocus: autoFocus ?? false,
+            maxLength: maxLength,
+            focusNode: focusNode,
+
+            obscureText: type == TextFieldType.password
+                ? (obscureText ?? true)
+                : false,
+            // onTapOutside: (event) {
+            //   FocusManager.instance.primaryFocus?.unfocus();
+            // },
+
+            controller: controller,
+
+            keyboardType: keyBoardType,
+            onChanged: onTextChangeCallBack,
+            validator: (value) {
+              if (type == TextFieldType.phoneNumber) {
+                return AppUtils.phoneNumberValidator(value: value ?? "");
+              } else if (type == TextFieldType.text) {
+                return AppUtils.textValidator(value: value ?? "");
+              } else {
+                return null;
+              }
+            },
+            style: GoogleFonts.inter(
+              fontWeight: fontWeight ?? FontWeight.normal,
+            ),
+            decoration: InputDecoration(
+              filled: true,
+              hintText: hintText,
+              prefixIcon: prefixIcon,
+              suffixIcon: suffixIcon,
+              counterText: "",
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(
+                  borderRadius ?? AppConstants.borderRadius,
+                ),
+              ),
+              enabledBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(
+                  borderRadius ?? AppConstants.borderRadius,
+                ),
+                borderSide: BorderSide(color: appColorScheme.outline),
+              ),
+              focusedBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(
+                  borderRadius ?? AppConstants.borderRadius,
+                ),
+                borderSide: BorderSide(color: appColorScheme.primary, width: 2),
+              ),
+              errorBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(
+                  borderRadius ?? AppConstants.borderRadius,
+                ),
+                borderSide: BorderSide(
+                  color: appColorScheme.error.withValues(alpha: .4),
+                ),
+              ),
+              focusedErrorBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(
+                  borderRadius ?? AppConstants.borderRadius,
+                ),
+                borderSide: BorderSide(
+                  color: appColorScheme.error.withValues(alpha: .4),
+                  width: 2,
+                ),
+              ),
+              prefixIconColor: WidgetStateColor.resolveWith((state) {
+                if (state.contains(WidgetState.error)) {
+                  return appColorScheme.error;
+                }
+                return appColorScheme.text;
+              }),
+              contentPadding: EdgeInsets.symmetric(
+                horizontal: paddingHorizontal ?? 16,
+                vertical: paddingVertical ?? 14,
+              ),
+              hintStyle: WidgetStateTextStyle.resolveWith((states) {
+                if (states.contains(WidgetState.error)) {
+                  return GoogleFonts.inter(color: appColorScheme.error);
+                }
+                return GoogleFonts.inter(color: appColorScheme.secondary);
+              }),
+            ),
+          ),
+        ],
+      );
+    });
+  }
+}
