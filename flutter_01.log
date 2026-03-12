@@ -1,0 +1,104 @@
+Flutter crash report.
+Please report a bug at https://github.com/flutter/flutter/issues.
+
+## command
+
+flutter create --platforms android --empty .
+
+## exception
+
+ProcessException: ProcessException: Process exited abnormally with exit code 69:
+You have not agreed to the Xcode license agreements. Please run 'sudo xcodebuild -license' from within a Terminal window to review and agree to the Xcode and Apple SDKs license.
+  Command: /usr/bin/arch -arm64e xcrun xcodebuild -list
+
+```
+#0      RunResult.throwException (package:flutter_tools/src/base/process.dart:118:5)
+#1      _DefaultProcessUtils.run (package:flutter_tools/src/base/process.dart:344:19)
+<asynchronous suspension>
+#2      XcodeProjectInterpreter.getInfo (package:flutter_tools/src/ios/xcodeproj.dart:328:30)
+<asynchronous suspension>
+#3      XcodeBasedProject.projectInfo (package:flutter_tools/src/xcode_project.dart:204:29)
+<asynchronous suspension>
+#4      IosProject.productBundleIdentifier (package:flutter_tools/src/xcode_project.dart:537:36)
+<asynchronous suspension>
+#5      FlutterProject.organizationNames (package:flutter_tools/src/project.dart:154:42)
+<asynchronous suspension>
+#6      CreateBase.getOrganization (package:flutter_tools/src/commands/create_base.dart:183:49)
+<asynchronous suspension>
+#7      CreateCommand.runCommand (package:flutter_tools/src/commands/create.dart:354:33)
+<asynchronous suspension>
+#8      FlutterCommand.run.<anonymous closure> (package:flutter_tools/src/runner/flutter_command.dart:1581:27)
+<asynchronous suspension>
+#9      AppContext.run.<anonymous closure> (package:flutter_tools/src/base/context.dart:154:19)
+<asynchronous suspension>
+#10     CommandRunner.runCommand (package:args/command_runner.dart:212:13)
+<asynchronous suspension>
+#11     FlutterCommandRunner.runCommand.<anonymous closure> (package:flutter_tools/src/runner/flutter_command_runner.dart:503:9)
+<asynchronous suspension>
+#12     AppContext.run.<anonymous closure> (package:flutter_tools/src/base/context.dart:154:19)
+<asynchronous suspension>
+#13     FlutterCommandRunner.runCommand (package:flutter_tools/src/runner/flutter_command_runner.dart:438:5)
+<asynchronous suspension>
+#14     run.<anonymous closure>.<anonymous closure> (package:flutter_tools/runner.dart:98:11)
+<asynchronous suspension>
+#15     AppContext.run.<anonymous closure> (package:flutter_tools/src/base/context.dart:154:19)
+<asynchronous suspension>
+#16     main (package:flutter_tools/executable.dart:101:3)
+<asynchronous suspension>
+```
+
+## flutter doctor
+
+```
+[✓] Flutter (Channel stable, 3.35.6, on macOS 26.3 25D125 darwin-arm64, locale en-GB) [191ms]
+    • Flutter version 3.35.6 on channel stable at /Users/umairshahid/dev/flutter
+    • Upstream repository https://github.com/flutter/flutter
+    • Framework revision 9f455d2486 (5 months ago), 2025-10-08 14:55:31 -0500
+    • Engine revision d2913632a4
+    • Dart version 3.9.2
+    • DevTools version 2.48.0
+    • Feature flags: enable-web, enable-linux-desktop, enable-macos-desktop, enable-windows-desktop, enable-android, enable-ios, cli-animations, enable-lldb-debugging
+
+[✓] Android toolchain - develop for Android devices (Android SDK version 35.0.0) [3.7s]
+    • Android SDK at /Users/umairshahid/Library/Android/sdk
+    • Emulator version 36.2.12.0 (build_id 14214601) (CL:N/A)
+    • Platform android-36, build-tools 35.0.0
+    • Java binary at: /Applications/Android Studio.app/Contents/jbr/Contents/Home/bin/java
+      This is the JDK bundled with the latest Android Studio installation on this machine.
+      To manually set the JDK path, use: `flutter config --jdk-dir="path/to/jdk"`.
+    • Java version OpenJDK Runtime Environment (build 17.0.10+0-17.0.10b1087.21-11572160)
+    • All Android licenses accepted.
+
+[!] Xcode - develop for iOS and macOS (Xcode 26.3) [1,547ms]
+    • Xcode at /Applications/Xcode.app/Contents/Developer
+    • Build 17C529
+    ✗ Xcode end user license agreement not signed; open Xcode or run the command 'sudo xcodebuild -license'.
+    ✗ Xcode requires additional components to be installed in order to run.
+      Launch Xcode and install additional required components when prompted or run:
+        sudo xcodebuild -runFirstLaunch
+    ✗ CocoaPods installed but not working.
+        You appear to have CocoaPods installed but it is not working.
+        This can happen if the version of Ruby that CocoaPods was installed with is different from the one being used to invoke it.
+        This can usually be fixed by re-installing CocoaPods.
+      For re-installation instructions, see https://guides.cocoapods.org/using/getting-started.html#installation
+
+[✓] Chrome - develop for the web [6ms]
+    • Chrome at /Applications/Google Chrome.app/Contents/MacOS/Google Chrome
+
+[✓] Android Studio (version 2023.3) [6ms]
+    • Android Studio at /Applications/Android Studio.app/Contents
+    • Flutter plugin can be installed from:
+      🔨 https://plugins.jetbrains.com/plugin/9212-flutter
+    • Dart plugin can be installed from:
+      🔨 https://plugins.jetbrains.com/plugin/6351-dart
+    • Java version OpenJDK Runtime Environment (build 17.0.10+0-17.0.10b1087.21-11572160)
+
+[✓] Connected device (2 available) [988ms]
+    • macOS (desktop) • macos  • darwin-arm64   • macOS 26.3 25D125 darwin-arm64
+    • Chrome (web)    • chrome • web-javascript • Google Chrome 145.0.7632.160
+
+[✓] Network resources [1,240ms]
+    • All expected network resources are available.
+
+! Doctor found issues in 1 category.
+```

@@ -1,4 +1,5 @@
 import 'package:buraq_enterprise_admin/core/config/extensions/app_colors_extension.dart';
+import 'package:buraq_enterprise_admin/core/constants/app_enum.dart';
 import 'package:buraq_enterprise_admin/screens/controllers/profile/change_name_controller.dart';
 import 'package:buraq_enterprise_admin/utils/app_util.dart';
 import 'package:buraq_enterprise_admin/utils/widgets/app_scroll_body.dart';
@@ -70,7 +71,7 @@ class ChangeNameScreenWidget extends StatelessWidget {
           AppUtils.showToast(
             context: context,
             label: "Name changed successfully",
-            vairant: "success"
+            vairant: ToastVariants.success,
           );
         },
         buttonText: "Save Changes",

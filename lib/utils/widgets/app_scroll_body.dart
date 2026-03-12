@@ -19,7 +19,7 @@ class AppScrollableBody extends StatelessWidget {
               ScrollViewKeyboardDismissBehavior.onDrag,
           child: ConstrainedBox(
             constraints: BoxConstraints(
-              minHeight: constraints.maxHeight,
+              minHeight: constraints.minHeight,
             ),
             child: centerContent
                 ? Center(child: child)

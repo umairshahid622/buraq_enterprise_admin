@@ -1,3 +1,4 @@
+import 'package:buraq_enterprise_admin/core/constants/app_enum.dart';
 import 'package:buraq_enterprise_admin/models/employee_model.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
@@ -25,8 +26,8 @@ class EmployeeRepository {
       'first_name': firstName,
       'last_name': lastName,
       'phone': phoneNumber,
-      'status': "active",
-      'role': 'employee',
+      'status': EmployeeStatus.active.name,
+      'role': Roles.employee.name,
       'createdAt': FieldValue.serverTimestamp(),
     });
   }

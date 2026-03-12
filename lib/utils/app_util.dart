@@ -1,8 +1,18 @@
 import 'package:buraq_enterprise_admin/core/config/extensions/app_colors_extension.dart';
+import 'package:buraq_enterprise_admin/core/constants/app_enum.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 class AppUtils {
+  static String getFirebaseErrorMessage({required String message}) {
+    String msg = message.toString();
+
+    if (msg.startsWith('Exception: ')) {
+      msg = msg.substring(11);
+    }
+    return msg;
+  }
+
   static String formatPKR(num amount) {
     final formatter = NumberFormat('#,##0', 'en_IN');
     return "Rs ${formatter.format(amount)}";
@@ -32,18 +42,16 @@ class AppUtils {
   static void showToast({
     required BuildContext context,
     required String label,
-    required String vairant,
+    required ToastVariants vairant,
   }) {
     final Color backgroundColor;
     switch (vairant) {
-      case "success":
+      case ToastVariants.success:
         backgroundColor = context.appColors.colorGreen;
         break;
-      case "error":
+      case ToastVariants.error:
         backgroundColor = context.appColors.error;
-        break;
-      default:
-        backgroundColor = context.appColors.colorGreen;
+        break;      
     }
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(

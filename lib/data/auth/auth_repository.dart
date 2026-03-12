@@ -1,3 +1,4 @@
+import 'package:buraq_enterprise_admin/core/constants/app_enum.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
@@ -73,7 +74,7 @@ class AuthRepository {
         'phone': user.phoneNumber,
         'first_name': "Admin",
         'last_name': "User",
-        'role': 'admin',
+        'role': Roles.admin.name,
         'createdAt': FieldValue.serverTimestamp(),
       });
     }

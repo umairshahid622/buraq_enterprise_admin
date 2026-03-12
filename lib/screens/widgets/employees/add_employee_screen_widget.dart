@@ -39,19 +39,21 @@ class AddEmployeeScreenWidget extends StatelessWidget {
               controller: _controller.phoneNumberController,
             ),
             SizedBox(height: spacing),
-            getCreatProfileButton(),
+            getCreatProfileButton(context: context),
           ],
         ),
       ),
     );
   }
 
-  Obx getCreatProfileButton() {
+  Obx getCreatProfileButton({required BuildContext context}) {
     return Obx(() {
       return AppFilledButton(
         isEnable: !_controller.isLoading.value,
         isLoading: _controller.isLoading.value,
-        onPressedCallBack: _controller.createEmployee,
+        onPressedCallBack: () {
+          _controller.createEmployee(context: context);
+        },
         buttonText: 'Create Profile',
       );
     });

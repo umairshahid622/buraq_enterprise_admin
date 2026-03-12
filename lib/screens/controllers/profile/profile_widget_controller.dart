@@ -1,11 +1,10 @@
-
+import 'package:buraq_enterprise_admin/core/constants/app_enum.dart';
 import 'package:buraq_enterprise_admin/data/auth/auth_repository.dart';
 import 'package:buraq_enterprise_admin/screens/controllers/common/user_controller.dart';
 import 'package:buraq_enterprise_admin/utils/app_util.dart';
 import 'package:get/get.dart';
 
-
-class ProfileWidgetController extends GetxController {  
+class ProfileWidgetController extends GetxController {
   RxBool isLoading = false.obs;
   final AuthRepository _authRepository;
   ProfileWidgetController(this._authRepository);
@@ -21,10 +20,8 @@ class ProfileWidgetController extends GetxController {
       AppUtils.showToast(
         context: Get.context!,
         label: "Something went wrong",
-        vairant: "error"
+        vairant: ToastVariants.error,
       );
     }
   }
-
-  
 }

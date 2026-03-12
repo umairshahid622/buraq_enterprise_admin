@@ -1,8 +1,9 @@
+import 'package:buraq_enterprise_admin/core/constants/app_enum.dart';
 import 'package:buraq_enterprise_admin/data/screens/employee_repository.dart';
 import 'package:buraq_enterprise_admin/models/employee_model.dart';
+import 'package:buraq_enterprise_admin/utils/app_util.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-
 
 class EmployeeController extends GetxController {
   final EmployeeRepository _employeeRepository;
@@ -59,11 +60,15 @@ class EmployeeController extends GetxController {
 
       return result;
     } catch (e) {
-      String msg = e.toString();
+      final String msg = AppUtils.getFirebaseErrorMessage(
+        message: e.toString(),
+      );
 
-      if (msg.startsWith('Exception: ')) {
-        msg = msg.substring(11);
-      }
+      AppUtils.showToast(
+        context: Get.context!,
+        label: msg,
+        vairant: ToastVariants.error,
+      );
 
       errorMessage.value = msg;
 
@@ -97,7 +102,7 @@ class EmployeeController extends GetxController {
 
     return employees.where((e) {
       return e.firstName.toLowerCase().contains(query) ||
-             e.id.toLowerCase().contains(query);
+          e.empId.toLowerCase().contains(query);
     }).toList();
   }
 }

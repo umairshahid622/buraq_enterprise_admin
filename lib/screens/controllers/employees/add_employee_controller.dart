@@ -1,3 +1,4 @@
+import 'package:buraq_enterprise_admin/core/constants/app_enum.dart';
 import 'package:buraq_enterprise_admin/data/screens/employee_repository.dart';
 import 'package:buraq_enterprise_admin/utils/app_util.dart';
 import 'package:flutter/material.dart';
@@ -19,7 +20,11 @@ class AddEmployeeController extends GetxController {
     super.onClose();
   }
 
-  void createEmployee() async {
+  void createEmployee({required BuildContext context}) async {
+    if (!formKey.currentState!.validate()) {
+      return;
+    }
+
     isLoading.value = true;
 
     try {
@@ -29,15 +34,16 @@ class AddEmployeeController extends GetxController {
         phoneNumber: phoneNumberController.text.trim(),
       );
       AppUtils.showToast(
-        context: Get.overlayContext!,
+        context: context,
         label: "Employee Added Sucessfully",
-        vairant: "success",
+        vairant: ToastVariants.success,
       );
     } catch (e) {
+      print(e);
       AppUtils.showToast(
-        context: Get.overlayContext!,
+        context: context,
         label: e.toString(),
-        vairant: "error",
+        vairant: ToastVariants.error,
       );
     } finally {
       isLoading.value = false;
