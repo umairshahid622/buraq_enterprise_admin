@@ -1,4 +1,3 @@
-
 import 'package:buraq_enterprise_admin/core/config/colors/app_color_scheme.dart';
 import 'package:buraq_enterprise_admin/core/config/extensions/app_colors_extension.dart';
 import 'package:buraq_enterprise_admin/core/constants/app_constants.dart';
@@ -58,7 +57,7 @@ class AppTextField extends StatelessWidget {
       case TextFieldType.email:
         keyBoardType = TextInputType.emailAddress;
         break;
-      case TextFieldType.otp:
+      case TextFieldType.otp || TextFieldType.amount:
         keyBoardType = TextInputType.number;
 
       case TextFieldType.phoneNumber:
@@ -73,9 +72,12 @@ class AppTextField extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           if (labelText != null) AppTextBody(text: labelText!, fontSize: 14),
-          if (labelText != null) const SizedBox(height: 5),
+          if (labelText != null) const SizedBox(height: 8),
 
           TextFormField(
+            onTapOutside: (event) {
+              FocusManager.instance.primaryFocus?.unfocus();
+            },
             textAlign: textAlign ?? TextAlign.start,
             autofocus: autoFocus ?? false,
             maxLength: maxLength,
@@ -84,9 +86,6 @@ class AppTextField extends StatelessWidget {
             obscureText: type == TextFieldType.password
                 ? (obscureText ?? true)
                 : false,
-            // onTapOutside: (event) {
-            //   FocusManager.instance.primaryFocus?.unfocus();
-            // },
 
             controller: controller,
 
@@ -97,6 +96,8 @@ class AppTextField extends StatelessWidget {
                 return AppUtils.phoneNumberValidator(value: value ?? "");
               } else if (type == TextFieldType.text) {
                 return AppUtils.textValidator(value: value ?? "");
+              } else if (type == TextFieldType.amount){
+                return AppUtils.amountValidator(value: int.parse(value ?? '0'));
               } else {
                 return null;
               }

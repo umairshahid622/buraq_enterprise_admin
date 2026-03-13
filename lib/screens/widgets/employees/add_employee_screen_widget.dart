@@ -4,55 +4,70 @@ import 'package:buraq_enterprise_admin/utils/widgets/app_scroll_body.dart';
 import 'package:buraq_enterprise_admin/utils/widgets/app_text_field.dart';
 import 'package:buraq_enterprise_admin/utils/widgets/buttons/app_filled_button.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get_state_manager/src/rx_flutter/rx_obx_widget.dart';
+import 'package:get/get.dart';
 
 class AddEmployeeScreenWidget extends StatelessWidget {
-  AddEmployeeScreenWidget({super.key});
-  final AddEmployeeController _controller = AddEmployeeController();
+  const AddEmployeeScreenWidget({super.key});
 
   @override
   Widget build(BuildContext context) {
     double screenHeight = MediaQuery.of(context).size.height;
     double spacing = screenHeight * 0.02;
-    return AppScrollableBody(
-      centerContent: true,
-      child: Form(
-        key: _controller.formKey,
-        child: Column(
-          children: [
-            AppTextField(
-              labelText: "First Name",
-              hintText: "Enter employee's first name",
-              controller: _controller.firstNameController,
+    return GetBuilder<AddEmployeeController>(
+      init: AddEmployeeController(),
+      dispose: (state) => Get.delete<AddEmployeeController>(),
+      builder: (controller) {
+        return AppScrollableBody(
+          centerContent: true,
+          child: Form(
+            key: controller.formKey,
+            child: Column(
+              children: [
+                AppTextField(
+                  labelText: "First Name",
+                  hintText: "Enter employee's first name",
+                  controller: controller.firstNameController,
+                ),
+                SizedBox(height: spacing),
+                AppTextField(
+                  labelText: "Last Name",
+                  hintText: "Enter employee's last name",
+                  controller: controller.lastNameController,
+                ),
+                SizedBox(height: spacing),
+                AppTextField(
+                  type: TextFieldType.phoneNumber,
+                  labelText: "Phone Number",
+                  hintText: "Enter employee's phone number",
+                  controller: controller.phoneNumberController,
+                ),
+                SizedBox(height: spacing),
+                AppTextField(
+                  type: TextFieldType.amount,
+                  labelText: "Allocate Amount",
+                  hintText: "Enter allocated amount",
+                  controller: controller.allocateAmountController,
+                ),
+                SizedBox(height: spacing),
+                getCreatProfileButton(context: context, controller: controller),
+              ],
             ),
-            SizedBox(height: spacing),
-            AppTextField(
-              labelText: "Last Name",
-              hintText: "Enter employee's last name",
-              controller: _controller.lastNameController,
-            ),
-            SizedBox(height: spacing),
-            AppTextField(
-              type: TextFieldType.phoneNumber,
-              labelText: "Phone Number",
-              hintText: "Enter employee's phone number",
-              controller: _controller.phoneNumberController,
-            ),
-            SizedBox(height: spacing),
-            getCreatProfileButton(context: context),
-          ],
-        ),
-      ),
+          ),
+        );
+      },
     );
   }
 
-  Obx getCreatProfileButton({required BuildContext context}) {
+  Obx getCreatProfileButton({
+    required BuildContext context,
+    required AddEmployeeController controller,
+  }) {
     return Obx(() {
       return AppFilledButton(
-        isEnable: !_controller.isLoading.value,
-        isLoading: _controller.isLoading.value,
+        isEnable: !controller.isLoading.value,
+        isLoading: controller.isLoading.value,
         onPressedCallBack: () {
-          _controller.createEmployee(context: context);
+          controller.createEmployee(context: context);
         },
         buttonText: 'Create Profile',
       );

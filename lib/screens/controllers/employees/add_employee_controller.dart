@@ -1,13 +1,16 @@
 import 'package:buraq_enterprise_admin/core/constants/app_enum.dart';
 import 'package:buraq_enterprise_admin/data/screens/employee_repository.dart';
+import 'package:buraq_enterprise_admin/screens/controllers/common/employee_controller.dart';
 import 'package:buraq_enterprise_admin/utils/app_util.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:go_router/go_router.dart';
 
 class AddEmployeeController extends GetxController {
   final TextEditingController firstNameController = TextEditingController();
   final TextEditingController lastNameController = TextEditingController();
   final TextEditingController phoneNumberController = TextEditingController();
+  final TextEditingController allocateAmountController = TextEditingController();
   final EmployeeRepository employeeRepository = EmployeeRepository();
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
   RxBool isLoading = false.obs;
@@ -32,17 +35,19 @@ class AddEmployeeController extends GetxController {
         firstName: firstNameController.text.trim(),
         lastName: lastNameController.text.trim(),
         phoneNumber: phoneNumberController.text.trim(),
+        amount: int.parse(allocateAmountController.text.trim()),
       );
+      
       AppUtils.showToast(
-        context: context,
         label: "Employee Added Sucessfully",
         vairant: ToastVariants.success,
       );
+      Get.find<EmployeeController>().fetchEmployees();
+      context.pop();
     } catch (e) {
       print(e);
       AppUtils.showToast(
-        context: context,
-        label: e.toString(),
+        label: AppUtils.getFirebaseErrorMessage(message: e.toString()),
         vairant: ToastVariants.error,
       );
     } finally {

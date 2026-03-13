@@ -18,7 +18,6 @@ class ProfileWidgetController extends GetxController {
     } catch (e) {
       isLoading.value = false;
       AppUtils.showToast(
-        context: Get.context!,
         label: "Something went wrong",
         vairant: ToastVariants.error,
       );

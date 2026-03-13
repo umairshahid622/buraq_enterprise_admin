@@ -1,5 +1,6 @@
 import 'package:buraq_enterprise_admin/core/config/app_router.dart';
 import 'package:buraq_enterprise_admin/core/config/colors/app_theme.dart';
+import 'package:buraq_enterprise_admin/core/constants/app_constants.dart';
 import 'package:buraq_enterprise_admin/firebase_options.dart';
 import 'package:buraq_enterprise_admin/screens/bindings/initial_bindings.dart';
 
@@ -32,6 +33,7 @@ class MyApp extends StatelessWidget {
         theme: AppTheme.lightTheme,
         darkTheme: AppTheme.darkTheme,
         themeMode: themeController.themeMode,
+        scaffoldMessengerKey: AppConstants.scaffoldMessengerKey,
         routerConfig: appRouter,
         
       );

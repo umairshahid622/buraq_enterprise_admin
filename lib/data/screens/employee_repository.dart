@@ -1,18 +1,26 @@
 import 'package:buraq_enterprise_admin/core/constants/app_enum.dart';
 import 'package:buraq_enterprise_admin/models/employee_model.dart';
+import 'package:buraq_enterprise_admin/utils/app_util.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class EmployeeRepository {
   final FirebaseFirestore _db = FirebaseFirestore.instance;
+  final FirebaseAuth _auth = FirebaseAuth.instance;
 
   Future<void> addEmployee({
     required String firstName,
     required String lastName,
     required String phoneNumber,
+    required int amount,
   }) async {
+    String formattedPhone = AppUtils.getFormattedPhoneNumber(
+      phoneNumber: phoneNumber,
+    );
+
     final existingUser = await _db
         .collection('users')
-        .where('phone', isEqualTo: phoneNumber)
+        .where('phone', isEqualTo: formattedPhone)
         .get();
 
     if (existingUser.docs.isNotEmpty) {
@@ -23,13 +31,20 @@ class EmployeeRepository {
 
     await _db.collection('users').doc(empId).set({
       'empId': empId,
+      'createdBy': _auth.currentUser!.uid,
       'first_name': firstName,
       'last_name': lastName,
-      'phone': phoneNumber,
+      'phone': formattedPhone,
       'status': EmployeeStatus.active.name,
       'role': Roles.employee.name,
       'createdAt': FieldValue.serverTimestamp(),
     });
+
+    allocateAmount(
+      allocateBy: _auth.currentUser!.uid,
+      employeeId: empId,
+      amount: amount,
+    );
   }
 
   Future<List<Employee>> fetchEmployees() async {
@@ -39,6 +54,19 @@ class EmployeeRepository {
         .get();
 
     return snapshot.docs.map((doc) => Employee.fromFirestore(doc)).toList();
+  }
+
+  Future allocateAmount({
+    required String allocateBy,
+    required String employeeId,
+    required int amount,
+  }) async {
+    _db.collection('allocatedAmount').doc(employeeId).set({
+      'allocatedBy': allocateBy,
+      'employeeId': employeeId,
+      'amount': amount,
+      'createdAt': FieldValue.serverTimestamp(),
+    });
   }
 
   Future<String> _generateEmployeeId({required String phoneNumber}) async {

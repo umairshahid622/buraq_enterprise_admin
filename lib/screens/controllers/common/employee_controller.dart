@@ -65,7 +65,6 @@ class EmployeeController extends GetxController {
       );
 
       AppUtils.showToast(
-        context: Get.context!,
         label: msg,
         vairant: ToastVariants.error,
       );

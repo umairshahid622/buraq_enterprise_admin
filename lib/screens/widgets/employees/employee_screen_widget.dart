@@ -1,3 +1,5 @@
+import 'package:buraq_enterprise_admin/core/config/extensions/app_colors_extension.dart';
+import 'package:buraq_enterprise_admin/core/constants/app_constants.dart';
 import 'package:buraq_enterprise_admin/core/constants/app_enum.dart';
 import 'package:buraq_enterprise_admin/data/screens/employee_repository.dart';
 import 'package:buraq_enterprise_admin/screens/controllers/common/employee_controller.dart';
@@ -22,41 +24,50 @@ class EmployeeScreenWidget extends StatelessWidget {
     return Column(
       children: [
         employeeHeader(context),
-        AppScrollableBody(
-          child: Padding(
-            padding: EdgeInsets.only(top: screnHeight * 0.05),
-            child: Column(
-              children: [
-                Obx(() {
-                  return Column(
-                    children: [
-                      statusCards(),
-                      SizedBox(height: screnHeight * 0.02),
-                      ListView.builder(
-                        itemCount: _controller.filteredEmployees.length,
-                        shrinkWrap: true,
-                        physics: const NeverScrollableScrollPhysics(),
-                        itemBuilder: (context, index) {
-                          return ProfileCard(
-                            cardWidget: Column(
-                              children: [
-                                Text(
-                                  _controller
-                                      .filteredEmployees[index]
-                                      .firstName,
-                                ),
-                                Text(
-                                  _controller.filteredEmployees[index].lastName,
-                                ),
-                              ],
-                            ),
-                          );
-                        },
-                      ),
-                    ],
-                  );
-                }),
-              ],
+        Expanded(
+          child: AppScrollableBody(
+            child: Padding(
+              padding: EdgeInsets.only(top: screnHeight * 0.05),
+              child: Column(
+                children: [
+                  Obx(() {
+                    return Column(
+                      children: [
+                        statusCards(context: context),
+                        SizedBox(height: AppConstants.commonVerticalSpacing),
+                        ListView.separated(
+                          itemCount: _controller.filteredEmployees.length,
+                          shrinkWrap: true,
+                          physics: const NeverScrollableScrollPhysics(),
+                          itemBuilder: (context, index) {
+                            return ProfileCard(
+                              cardWidget: Column(
+                                children: [
+                                  Text(
+                                    _controller
+                                        .filteredEmployees[index]
+                                        .firstName,
+                                  ),
+                                  Text(
+                                    _controller
+                                        .filteredEmployees[index]
+                                        .lastName,
+                                  ),
+                                ],
+                              ),
+                            );
+                          },
+                          separatorBuilder: (context, index) {
+                            return SizedBox(
+                              height: AppConstants.commonVerticalSpacing,
+                            );
+                          },
+                        ),
+                      ],
+                    );
+                  }),
+                ],
+              ),
             ),
           ),
         ),
@@ -64,12 +75,14 @@ class EmployeeScreenWidget extends StatelessWidget {
     );
   }
 
-  Row statusCards() {
+  Row statusCards({required BuildContext context}) {
     final employeeLength = _controller.employees.length;
-    final activeEmployeeLength =
-        _controller.employees.where((e) => e.status == EmployeeStatus.active.name).length;
-    final inActiveEmployeeLength =
-        _controller.employees.where((e) => e.status == EmployeeStatus.inactive.name).length;
+    final activeEmployeeLength = _controller.employees
+        .where((e) => e.status == EmployeeStatus.active.name)
+        .length;
+    final inActiveEmployeeLength = _controller.employees
+        .where((e) => e.status == EmployeeStatus.inactive.name)
+        .length;
 
     return Row(
       children: [
@@ -78,27 +91,44 @@ class EmployeeScreenWidget extends StatelessWidget {
             cardWidget: Column(
               children: [
                 AppTextHeading(text: employeeLength.toString()),
-                AppTextBody(text: "Total"),
+                SizedBox(height: 10),
+                AppTextBody(text: "Total", color: context.appColors.secondary),
               ],
             ),
           ),
         ),
+        SizedBox(width: AppConstants.commonHorizontalSpacing),
         Expanded(
           child: ProfileCard(
             cardWidget: Column(
               children: [
-                AppTextHeading(text: activeEmployeeLength.toString()),
-                AppTextBody(text: EmployeeStatus.active.name),
+                AppTextHeading(
+                  text: activeEmployeeLength.toString(),
+                  color: context.appColors.colorGreen,
+                ),
+                SizedBox(height: 10),
+                AppTextBody(
+                  text: EmployeeStatus.active.name.capitalize!,
+                  color: context.appColors.secondary,
+                ),
               ],
             ),
           ),
         ),
+        SizedBox(width: AppConstants.commonHorizontalSpacing),
         Expanded(
           child: ProfileCard(
             cardWidget: Column(
               children: [
-                AppTextHeading(text: inActiveEmployeeLength.toString()),
-                AppTextBody(text: EmployeeStatus.inactive.name.capitalize!),
+                AppTextHeading(
+                  text: inActiveEmployeeLength.toString(),
+                  color: context.appColors.error,
+                ),
+                SizedBox(height: 10),
+                AppTextBody(
+                  text: EmployeeStatus.inactive.name.capitalize!,
+                  color: context.appColors.secondary,
+                ),
               ],
             ),
           ),

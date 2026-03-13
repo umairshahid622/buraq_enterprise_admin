@@ -1,4 +1,5 @@
 import 'package:buraq_enterprise_admin/core/constants/app_enum.dart';
+import 'package:buraq_enterprise_admin/utils/app_util.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
@@ -14,12 +15,7 @@ class AuthRepository {
   }) async {
     try {
       // Standardize the Pakistani number format
-      String formattedPhone = phoneNumber.trim();
-      if (formattedPhone.startsWith('0')) {
-        formattedPhone = '+92${formattedPhone.substring(1)}';
-      } else if (!formattedPhone.startsWith('+')) {
-        formattedPhone = '+92$formattedPhone';
-      }
+      String formattedPhone = AppUtils.getFormattedPhoneNumber(phoneNumber: phoneNumber);
 
       await _auth.verifyPhoneNumber(
         phoneNumber: formattedPhone,

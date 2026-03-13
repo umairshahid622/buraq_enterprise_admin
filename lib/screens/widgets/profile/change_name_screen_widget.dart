@@ -1,4 +1,3 @@
-import 'package:buraq_enterprise_admin/core/config/extensions/app_colors_extension.dart';
 import 'package:buraq_enterprise_admin/core/constants/app_enum.dart';
 import 'package:buraq_enterprise_admin/screens/controllers/profile/change_name_controller.dart';
 import 'package:buraq_enterprise_admin/utils/app_util.dart';
@@ -8,6 +7,7 @@ import 'package:buraq_enterprise_admin/utils/widgets/app_text_field.dart';
 import 'package:buraq_enterprise_admin/utils/widgets/buttons/app_filled_button.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:go_router/go_router.dart';
 
 class ChangeNameScreenWidget extends StatelessWidget {
   const ChangeNameScreenWidget({super.key});
@@ -68,11 +68,11 @@ class ChangeNameScreenWidget extends StatelessWidget {
           await controller.saveChanges();
           if (!context.mounted) return;
           await controller.saveChanges();
-          AppUtils.showToast(
-            context: context,
+          AppUtils.showToast(            
             label: "Name changed successfully",
             vairant: ToastVariants.success,
           );
+          context.pop();
         },
         buttonText: "Save Changes",
       );

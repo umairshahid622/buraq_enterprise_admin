@@ -1,4 +1,5 @@
 import 'package:buraq_enterprise_admin/core/config/extensions/app_colors_extension.dart';
+import 'package:buraq_enterprise_admin/core/constants/app_constants.dart';
 import 'package:buraq_enterprise_admin/core/constants/app_enum.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -39,21 +40,41 @@ class AppUtils {
     return null;
   }
 
+  static String? amountValidator({required int value}) {
+    if (value <= 0) {
+      return "Amount must be greater than 0";
+    }
+    return null;
+  }
+
+  static String getFormattedPhoneNumber({required String phoneNumber}) {
+    String formattedPhone = phoneNumber.trim();
+    if (formattedPhone.startsWith('0')) {
+      formattedPhone = '+92${formattedPhone.substring(1)}';
+    } else if (!formattedPhone.startsWith('+')) {
+      formattedPhone = '+92$formattedPhone';
+    }
+    return formattedPhone;
+  }
+
   static void showToast({
-    required BuildContext context,
     required String label,
     required ToastVariants vairant,
   }) {
+    final scaffoldState = AppConstants.scaffoldMessengerKey.currentState;
+    if (scaffoldState == null) return;
+    final context = scaffoldState.context;
     final Color backgroundColor;
     switch (vairant) {
       case ToastVariants.success:
-        backgroundColor = context.appColors.colorGreen;
+        backgroundColor = context.appColors.primary;
         break;
       case ToastVariants.error:
         backgroundColor = context.appColors.error;
-        break;      
+        break;
     }
-    ScaffoldMessenger.of(context).showSnackBar(
+    
+    scaffoldState.showSnackBar(
       SnackBar(
         content: Text(
           label,

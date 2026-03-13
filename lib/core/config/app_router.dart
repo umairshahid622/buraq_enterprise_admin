@@ -2,6 +2,7 @@
 
 import 'package:buraq_enterprise_admin/core/config/app_session.dart';
 import 'package:buraq_enterprise_admin/core/config/router_refresh_stream.dart';
+import 'package:buraq_enterprise_admin/core/constants/app_constants.dart';
 import 'package:buraq_enterprise_admin/layouts/auth_layout.dart';
 import 'package:buraq_enterprise_admin/layouts/main_layout.dart';
 import 'package:buraq_enterprise_admin/screens/auth/login_screen.dart';
@@ -16,7 +17,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
-final authShellKey = GlobalKey<NavigatorState>();
 final RouterRefreshStream _authStatus = RouterRefreshStream();
 
 final appRouter = GoRouter(
@@ -25,8 +25,7 @@ final appRouter = GoRouter(
   routes: [
     GoRoute(path: '/splash', builder: (context, state) => SplashScreenWidget()),
     ShellRoute(
-      // Auth shell
-      navigatorKey: authShellKey,
+      navigatorKey: AppConstants.rootNavigatorKey,
       builder: (context, state, child) => AuthLayout(child: child),
       routes: [
         GoRoute(
