@@ -1,8 +1,8 @@
 import 'package:buraq_enterprise_admin/core/config/extensions/app_colors_extension.dart';
 import 'package:buraq_enterprise_admin/core/constants/app_constants.dart';
 import 'package:buraq_enterprise_admin/core/constants/app_enum.dart';
-import 'package:buraq_enterprise_admin/data/screens/employee_repository.dart';
 import 'package:buraq_enterprise_admin/screens/controllers/common/employee_controller.dart';
+import 'package:buraq_enterprise_admin/utils/app_util.dart';
 import 'package:buraq_enterprise_admin/utils/widgets/app_scroll_body.dart';
 import 'package:buraq_enterprise_admin/utils/widgets/app_text.dart';
 import 'package:buraq_enterprise_admin/utils/widgets/app_text_field.dart';
@@ -14,9 +14,7 @@ import 'package:go_router/go_router.dart';
 
 class EmployeeScreenWidget extends StatelessWidget {
   EmployeeScreenWidget({super.key});
-  final EmployeeController _controller = Get.put(
-    EmployeeController(EmployeeRepository()),
-  );
+  final EmployeeController _controller = Get.find<EmployeeController>();
 
   @override
   Widget build(BuildContext context) {
@@ -40,18 +38,67 @@ class EmployeeScreenWidget extends StatelessWidget {
                           shrinkWrap: true,
                           physics: const NeverScrollableScrollPhysics(),
                           itemBuilder: (context, index) {
+                            final String firstName =
+                                _controller.filteredEmployees[index].firstName;
+                            final String lastName =
+                                _controller.filteredEmployees[index].lastName;
+                            final status =
+                                _controller.filteredEmployees[index].status;
+                            final employeeId =
+                                _controller.filteredEmployees[index].empId;
+                            final employeePhone =
+                                _controller.filteredEmployees[index].phone;
+
                             return ProfileCard(
-                              cardWidget: Column(
+                              cardWidget: Row(
+                                crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  Text(
-                                    _controller
-                                        .filteredEmployees[index]
-                                        .firstName,
+                                  AppUtils.getNameInitalsContainer(
+                                    colorScheme: context.appColors,
+                                    firstName: firstName,
+                                    lastName: '',
+                                    size: 44,
                                   ),
-                                  Text(
-                                    _controller
-                                        .filteredEmployees[index]
-                                        .lastName,
+                                  Expanded(
+                                    child: Container(
+                                      margin: EdgeInsets.symmetric(
+                                        horizontal: AppConstants
+                                            .commonHorizontalSpacing,
+                                      ),
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Row(
+                                            children: [
+                                              Flexible(
+                                                child: AppTextBody(
+                                                  text: '$firstName $lastName',
+                                                ),
+                                              ),
+                                              SizedBox(width: 12),
+                                              statusContainer(
+                                                context: context,
+                                                status: status,
+                                                fontSize: 13,
+                                              ),
+                                            ],
+                                          ),
+                                          AppTextBody(
+                                            text: employeeId,
+                                            color: context.appColors.secondary,
+                                            fontSize: 14,
+                                          ),
+                                          SizedBox(height: 10),
+                                          contactRow(context, employeePhone, 14,Icons.phone),
+                                          contactRow(context, employeePhone, 14,Icons.business_center_outlined),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                  Icon(
+                                    Icons.more_vert,
+                                    color: context.appColors.secondary,
                                   ),
                                 ],
                               ),
@@ -72,6 +119,52 @@ class EmployeeScreenWidget extends StatelessWidget {
           ),
         ),
       ],
+    );
+  }
+
+  Row contactRow(BuildContext context, String employeePhone, double fontSize, IconData icon) {
+    return Row(
+      children: [
+        Icon(icon, color: context.appColors.secondary, size: fontSize),
+        SizedBox(width: 5,),
+        AppTextBody(
+          text: employeePhone,
+          color: context.appColors.secondary,
+          fontSize: fontSize,
+        ),
+      ],
+    );
+  }
+
+  Container statusContainer({
+    required BuildContext context,
+    required String status,
+    double? fontSize,
+  }) {
+    final Color bgColor;
+    final Color textColor;
+    if (status == EmployeeStatus.active.name) {
+      bgColor = context.appColors.colorGreen.withValues(alpha: 0.20);
+      textColor = context.appColors.colorGreen;
+    } else if (status == EmployeeStatus.inactive.name) {
+      bgColor = context.appColors.error.withValues(alpha: 0.20);
+      textColor = context.appColors.error;
+    } else {
+      bgColor = context.appColors.secondary.withValues(alpha: 0.20);
+      textColor = context.appColors.secondary;
+    }
+    if (status.isEmpty) {
+      return Container();
+    }
+    return Container(
+      decoration: BoxDecoration(
+        color: bgColor,
+        borderRadius: BorderRadius.circular(15),
+        border: Border.all(color: textColor, width: 1),
+      ),
+
+      padding: EdgeInsets.symmetric(horizontal: 12, vertical: 2),
+      child: AppTextBody(text: status, color: textColor, fontSize: fontSize),
     );
   }
 

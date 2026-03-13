@@ -1,6 +1,8 @@
+import 'package:buraq_enterprise_admin/core/config/colors/app_color_scheme.dart';
 import 'package:buraq_enterprise_admin/core/config/extensions/app_colors_extension.dart';
 import 'package:buraq_enterprise_admin/core/constants/app_constants.dart';
 import 'package:buraq_enterprise_admin/core/constants/app_enum.dart';
+import 'package:buraq_enterprise_admin/utils/widgets/app_text.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
@@ -57,6 +59,25 @@ class AppUtils {
     return formattedPhone;
   }
 
+  static getNameInitalsContainer({required String firstName, required String lastName, required AppColorScheme colorScheme, double size = 75.0}) {
+    final String firstNameInitial = firstName.isEmpty ? '' : firstName[0].toUpperCase();
+    final String lastNameInitial = lastName.isEmpty ? '' :lastName[0].toUpperCase();
+    return Container(
+      alignment: Alignment.center,
+      width: size,
+      height: size,
+      decoration: BoxDecoration(
+        shape: BoxShape.circle,
+        color: colorScheme.primary,
+      ),
+      child: AppTextHeading(
+        text: "$firstNameInitial$lastNameInitial",
+        fontSize: size/2,
+        color: colorScheme.outline,
+      ),
+    );
+  }
+
   static void showToast({
     required String label,
     required ToastVariants vairant,
@@ -73,7 +94,7 @@ class AppUtils {
         backgroundColor = context.appColors.error;
         break;
     }
-    
+
     scaffoldState.showSnackBar(
       SnackBar(
         content: Text(

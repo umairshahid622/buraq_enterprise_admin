@@ -66,9 +66,7 @@ class AddEmployeeScreenWidget extends StatelessWidget {
       return AppFilledButton(
         isEnable: !controller.isLoading.value,
         isLoading: controller.isLoading.value,
-        onPressedCallBack: () {
-          controller.createEmployee(context: context);
-        },
+        onPressedCallBack: controller.createEmployee,
         buttonText: 'Create Profile',
       );
     });

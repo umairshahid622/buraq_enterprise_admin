@@ -3,6 +3,7 @@ import 'package:buraq_enterprise_admin/core/config/extensions/app_colors_extensi
 import 'package:buraq_enterprise_admin/data/auth/auth_repository.dart';
 import 'package:buraq_enterprise_admin/screens/controllers/common/user_controller.dart';
 import 'package:buraq_enterprise_admin/screens/controllers/profile/profile_widget_controller.dart';
+import 'package:buraq_enterprise_admin/utils/app_util.dart';
 import 'package:buraq_enterprise_admin/utils/widgets/app_scroll_body.dart';
 import 'package:buraq_enterprise_admin/utils/widgets/app_text.dart';
 import 'package:buraq_enterprise_admin/utils/widgets/buttons/app_filled_button.dart';
@@ -87,25 +88,10 @@ class ProfileScreenWidget extends StatelessWidget {
     if (firstName.isEmpty && lastName.isEmpty) {
       return SizedBox.shrink();
     }
-    final firstNameInitial = firstName[0];
-    final lastNameInitial = lastName[0];
 
     return Row(
       children: [
-        Container(
-          alignment: Alignment.center,
-          width: 75,
-          height: 75,
-          decoration: BoxDecoration(
-            shape: BoxShape.circle,
-            color: appColorScheme.primary,
-          ),
-          child: AppTextHeading(
-            text: "$firstNameInitial$lastNameInitial",
-            fontSize: 32,
-            color: appColorScheme.outline,
-          ),
-        ),
+        AppUtils.getNameInitalsContainer(colorScheme: appColorScheme, firstName: firstName, lastName: lastName),
         SizedBox(width: 15),
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,

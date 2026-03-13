@@ -45,6 +45,7 @@ class MainLayout extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
+        toolbarHeight: 80,
         leading:
             isNestedRoute
                 ? IconButton(
@@ -65,6 +66,7 @@ class MainLayout extends StatelessWidget {
               text: titles[location]?["heading"] ?? "",
               fontSize: AppConstants.mainHeadingFontSize,
             ),
+            SizedBox(height: 10,),
             AppTextBody(
               text: titles[location]?["subHeading"] ?? "",
               color: context.appColors.secondary,

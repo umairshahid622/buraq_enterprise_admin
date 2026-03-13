@@ -84,7 +84,6 @@ class LoginScreen extends StatelessWidget {
           // print("Continue Button Pressed");
           controller.verifyPhoneNumber((verId) {
             if (!context.mounted) return;
-            print("Verification ID: $verId");
             showModalBottomSheet(
               backgroundColor: Colors.transparent,
               context: context,

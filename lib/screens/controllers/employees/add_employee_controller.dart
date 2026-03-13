@@ -1,3 +1,4 @@
+import 'package:buraq_enterprise_admin/core/constants/app_constants.dart';
 import 'package:buraq_enterprise_admin/core/constants/app_enum.dart';
 import 'package:buraq_enterprise_admin/data/screens/employee_repository.dart';
 import 'package:buraq_enterprise_admin/screens/controllers/common/employee_controller.dart';
@@ -23,7 +24,7 @@ class AddEmployeeController extends GetxController {
     super.onClose();
   }
 
-  void createEmployee({required BuildContext context}) async {
+  void createEmployee() async {
     if (!formKey.currentState!.validate()) {
       return;
     }
@@ -42,10 +43,9 @@ class AddEmployeeController extends GetxController {
         label: "Employee Added Sucessfully",
         vairant: ToastVariants.success,
       );
-      Get.find<EmployeeController>().fetchEmployees();
-      context.pop();
+      await Get.find<EmployeeController>().fetchEmployees();
+      AppConstants.scaffoldMessengerKey.currentContext?.pop();
     } catch (e) {
-      print(e);
       AppUtils.showToast(
         label: AppUtils.getFirebaseErrorMessage(message: e.toString()),
         vairant: ToastVariants.error,

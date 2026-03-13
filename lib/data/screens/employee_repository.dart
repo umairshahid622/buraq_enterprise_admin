@@ -32,19 +32,17 @@ class EmployeeRepository {
     await _db.collection('users').doc(empId).set({
       'empId': empId,
       'createdBy': _auth.currentUser!.uid,
+      'updatedBy': _auth.currentUser!.uid,
       'first_name': firstName,
       'last_name': lastName,
       'phone': formattedPhone,
+      'allocatedAmount': amount,
       'status': EmployeeStatus.active.name,
       'role': Roles.employee.name,
       'createdAt': FieldValue.serverTimestamp(),
+      'updatedAt': FieldValue.serverTimestamp(),
     });
 
-    allocateAmount(
-      allocateBy: _auth.currentUser!.uid,
-      employeeId: empId,
-      amount: amount,
-    );
   }
 
   Future<List<Employee>> fetchEmployees() async {
@@ -61,7 +59,7 @@ class EmployeeRepository {
     required String employeeId,
     required int amount,
   }) async {
-    _db.collection('allocatedAmount').doc(employeeId).set({
+    await _db.collection('allocatedAmount').doc(employeeId).set({
       'allocatedBy': allocateBy,
       'employeeId': employeeId,
       'amount': amount,
