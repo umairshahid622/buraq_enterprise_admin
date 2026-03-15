@@ -27,7 +27,7 @@ class AppTextField extends StatelessWidget {
   final FontWeight? fontWeight;
   final FocusNode? focusNode;
   final Function(String value)? onTextChangeCallBack;
-  final Function? onTapCallBack;
+  final Function()? onTapCallBack;
 
   const AppTextField({
     super.key,
@@ -56,18 +56,25 @@ class AppTextField extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final TextInputType keyBoardType;
+    final Widget? defaultPrefixIcon;
 
     switch (type) {
       case TextFieldType.email:
         keyBoardType = TextInputType.emailAddress;
+        defaultPrefixIcon = null;
         break;
       case TextFieldType.otp || TextFieldType.amount:
         keyBoardType = TextInputType.number;
-
+        defaultPrefixIcon = null;
+        break;
       case TextFieldType.phoneNumber:
         keyBoardType = TextInputType.phone;
+        defaultPrefixIcon = const Icon(Icons.phone);
+        break;
       default:
         keyBoardType = TextInputType.text;
+        defaultPrefixIcon = null;
+        break;
     }
 
     return Obx(() {
@@ -83,7 +90,7 @@ class AppTextField extends StatelessWidget {
               FocusManager.instance.primaryFocus?.unfocus();
             },
             readOnly: readOnly,
-            onTap:onTapCallBack!(),
+            onTap: onTapCallBack ?? () {},
             textAlign: textAlign ?? TextAlign.start,
             autofocus: autoFocus ?? false,
             maxLength: maxLength,
@@ -114,7 +121,7 @@ class AppTextField extends StatelessWidget {
             decoration: InputDecoration(
               filled: true,
               hintText: hintText,
-              prefixIcon: prefixIcon,
+              prefixIcon: prefixIcon ?? defaultPrefixIcon,
               suffixIcon: suffixIcon,
               counterText: "",
               border: OutlineInputBorder(
