@@ -68,11 +68,13 @@ class ChangeNameScreenWidget extends StatelessWidget {
           await controller.saveChanges();
           if (!context.mounted) return;
           await controller.saveChanges();
-          AppUtils.showToast(            
+          AppUtils.showToast(
             label: "Name changed successfully",
             vairant: ToastVariants.success,
           );
-          context.pop();
+          if (context.mounted) {
+            context.pop();
+          }
         },
         buttonText: "Save Changes",
       );

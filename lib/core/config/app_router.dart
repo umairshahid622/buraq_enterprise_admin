@@ -11,6 +11,7 @@ import 'package:buraq_enterprise_admin/screens/widgets/employees/employee_screen
 import 'package:buraq_enterprise_admin/screens/widgets/home/home_screen_widget.dart';
 import 'package:buraq_enterprise_admin/screens/widgets/profile/change_name_screen_widget.dart';
 import 'package:buraq_enterprise_admin/screens/widgets/profile/profile_screen_widget.dart';
+import 'package:buraq_enterprise_admin/screens/widgets/projects/add_project_screen_widget.dart';
 import 'package:buraq_enterprise_admin/screens/widgets/projects/project_screen_widget.dart';
 import 'package:buraq_enterprise_admin/screens/widgets/splash/splash_screen_widget.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -31,12 +32,12 @@ final appRouter = GoRouter(
         GoRoute(
           path: '/auth/login',
           pageBuilder: (_, _) => NoTransitionPage(
-            
             child: Builder(
               builder: (context) {
                 return const LoginScreen();
-              }
-            )),
+              },
+            ),
+          ),
         ),
       ],
     ),
@@ -77,6 +78,13 @@ final appRouter = GoRouter(
               path: '/projects',
               pageBuilder: (context, state) =>
                   NoTransitionPage(child: ProjectScreenWidget()),
+              routes: [
+                GoRoute(
+                  path: 'add-project',
+                  pageBuilder: (context, state) =>
+                      NoTransitionPage(child: AddProjectScreenWidget()),
+                ),
+              ],
             ),
           ],
         ),

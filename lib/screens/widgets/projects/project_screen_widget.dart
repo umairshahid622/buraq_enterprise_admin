@@ -3,6 +3,7 @@ import 'package:buraq_enterprise_admin/utils/widgets/app_scroll_body.dart';
 import 'package:buraq_enterprise_admin/utils/widgets/app_text_field.dart';
 import 'package:buraq_enterprise_admin/utils/widgets/buttons/app_filled_button.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 class ProjectScreenWidget extends StatelessWidget {
   ProjectScreenWidget({super.key});
@@ -27,7 +28,9 @@ class ProjectScreenWidget extends StatelessWidget {
                 buttonWidth: 60,
                 buttonText: "+",
                 fontSize: 20,
-                onPressedCallBack: () {},
+                onPressedCallBack: () {
+                  context.go('/projects/add-project');
+                },
               ),
             ],
           ),

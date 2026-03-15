@@ -1,4 +1,3 @@
-import 'package:buraq_enterprise_admin/core/constants/app_constants.dart';
 import 'package:buraq_enterprise_admin/core/constants/app_enum.dart';
 import 'package:buraq_enterprise_admin/data/screens/employee_repository.dart';
 import 'package:buraq_enterprise_admin/screens/controllers/common/employee_controller.dart';
@@ -11,7 +10,8 @@ class AddEmployeeController extends GetxController {
   final TextEditingController firstNameController = TextEditingController();
   final TextEditingController lastNameController = TextEditingController();
   final TextEditingController phoneNumberController = TextEditingController();
-  final TextEditingController allocateAmountController = TextEditingController();
+  final TextEditingController allocateAmountController =
+      TextEditingController();
   final EmployeeRepository employeeRepository = EmployeeRepository();
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
   RxBool isLoading = false.obs;
@@ -24,7 +24,7 @@ class AddEmployeeController extends GetxController {
     super.onClose();
   }
 
-  void createEmployee() async {
+  void createEmployee({required BuildContext context}) async {
     if (!formKey.currentState!.validate()) {
       return;
     }
@@ -38,14 +38,16 @@ class AddEmployeeController extends GetxController {
         phoneNumber: phoneNumberController.text.trim(),
         amount: int.parse(allocateAmountController.text.trim()),
       );
-      
+      await Get.find<EmployeeController>().fetchEmployees();
+      if (context.mounted) {
+        context.pop();
+      }
       AppUtils.showToast(
         label: "Employee Added Sucessfully",
         vairant: ToastVariants.success,
       );
-      await Get.find<EmployeeController>().fetchEmployees();
-      AppConstants.scaffoldMessengerKey.currentContext?.pop();
     } catch (e) {
+      print("Add Employeee ERROR: $e");
       AppUtils.showToast(
         label: AppUtils.getFirebaseErrorMessage(message: e.toString()),
         vairant: ToastVariants.error,

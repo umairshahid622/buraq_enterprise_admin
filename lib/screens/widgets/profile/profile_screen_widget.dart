@@ -7,7 +7,7 @@ import 'package:buraq_enterprise_admin/utils/app_util.dart';
 import 'package:buraq_enterprise_admin/utils/widgets/app_scroll_body.dart';
 import 'package:buraq_enterprise_admin/utils/widgets/app_text.dart';
 import 'package:buraq_enterprise_admin/utils/widgets/buttons/app_filled_button.dart';
-import 'package:buraq_enterprise_admin/utils/widgets/profile_card.dart';
+import 'package:buraq_enterprise_admin/utils/widgets/app_card_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';
@@ -28,7 +28,7 @@ class ProfileScreenWidget extends StatelessWidget {
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            ProfileCard(
+            AppCardWidget(
               cardWidget: getTopCard(
                 appColorScheme: appColorScheme,
                 firstName: user?.firstName ?? '',
@@ -40,7 +40,7 @@ class ProfileScreenWidget extends StatelessWidget {
             SizedBox(height: spacing / 2),
             AppTextHeading(text: "Account", fontSize: 22),
             SizedBox(height: spacing / 4),
-            ProfileCard(cardWidget: getChangeNameCard(context)),
+            AppCardWidget(cardWidget: getChangeNameCard(context)),
             SizedBox(height: spacing),
             _logoutButton(profileWidgetController),
           ],

@@ -14,6 +14,7 @@ class AppTextField extends StatelessWidget {
   final bool? autoFocus;
   final String? labelText;
   final bool? obscureText;
+  final bool readOnly;
   final Icon? prefixIcon;
   final Widget? suffixIcon;
   final double? paddingHorizontal;
@@ -24,8 +25,9 @@ class AppTextField extends StatelessWidget {
   final int? maxLength;
   final String? counterText;
   final FontWeight? fontWeight;
-  final Function(String value)? onTextChangeCallBack;
   final FocusNode? focusNode;
+  final Function(String value)? onTextChangeCallBack;
+  final Function? onTapCallBack;
 
   const AppTextField({
     super.key,
@@ -35,9 +37,11 @@ class AppTextField extends StatelessWidget {
     this.hintText,
 
     this.obscureText,
+    this.readOnly = false,
     this.prefixIcon,
     this.suffixIcon,
     this.onTextChangeCallBack,
+    this.onTapCallBack,
     this.autoFocus,
     this.paddingHorizontal,
     this.paddingVertical,
@@ -78,6 +82,8 @@ class AppTextField extends StatelessWidget {
             onTapOutside: (event) {
               FocusManager.instance.primaryFocus?.unfocus();
             },
+            readOnly: readOnly,
+            onTap:onTapCallBack!(),
             textAlign: textAlign ?? TextAlign.start,
             autofocus: autoFocus ?? false,
             maxLength: maxLength,

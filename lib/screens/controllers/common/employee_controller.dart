@@ -32,12 +32,8 @@ class EmployeeController extends GetxController {
   @override
   void onInit() {
     super.onInit();
-
-    // Listen to search input
     searchController.addListener(_onSearchChanged);
 
-    // Load on start (optional)
-    fetchEmployees();
   }
 
   @override
@@ -63,6 +59,8 @@ class EmployeeController extends GetxController {
       final String msg = AppUtils.getFirebaseErrorMessage(
         message: e.toString(),
       );
+
+      print("Errror While Fetching the EMployee: $e");
 
       AppUtils.showToast(
         label: msg,

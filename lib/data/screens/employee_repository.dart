@@ -29,7 +29,10 @@ class EmployeeRepository {
 
     final empId = await _generateEmployeeId(phoneNumber: phoneNumber);
 
-    await _db.collection('users').doc(empId).set({
+    WriteBatch batch = _db.batch();
+    DocumentReference userRef = _db.collection('users').doc(empId);    
+
+    batch.set(userRef, {
       'empId': empId,
       'createdBy': _auth.currentUser!.uid,
       'updatedBy': _auth.currentUser!.uid,
@@ -37,12 +40,21 @@ class EmployeeRepository {
       'last_name': lastName,
       'phone': formattedPhone,
       'allocatedAmount': amount,
-      'status': EmployeeStatus.active.name,
+      'remaining': amount,
+      'status': Status.active.name,
       'role': Roles.employee.name,
       'createdAt': FieldValue.serverTimestamp(),
       'updatedAt': FieldValue.serverTimestamp(),
     });
 
+    allocateAmountHistory(
+      allocateBy: _auth.currentUser!.uid,
+      employeeId: empId,
+      amount: amount,
+      batch: batch,
+    );
+
+    batch.commit();
   }
 
   Future<List<Employee>> fetchEmployees() async {
@@ -54,17 +66,26 @@ class EmployeeRepository {
     return snapshot.docs.map((doc) => Employee.fromFirestore(doc)).toList();
   }
 
-  Future allocateAmount({
+  Future allocateAmountHistory({
     required String allocateBy,
     required String employeeId,
     required int amount,
+    WriteBatch? batch,
   }) async {
-    await _db.collection('allocatedAmount').doc(employeeId).set({
+    final DocumentReference allocatedAmountReference = _db
+        .collection('allocatedAmount')
+        .doc(employeeId);
+    final data = {
       'allocatedBy': allocateBy,
       'employeeId': employeeId,
       'amount': amount,
-      'createdAt': FieldValue.serverTimestamp(),
-    });
+      'updatedAt': FieldValue.serverTimestamp(),
+    };
+    if (batch != null) {
+      batch.set(allocatedAmountReference, data);
+    } else {
+      await allocatedAmountReference.set(data);
+    }
   }
 
   Future<String> _generateEmployeeId({required String phoneNumber}) async {

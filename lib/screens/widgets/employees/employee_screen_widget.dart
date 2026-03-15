@@ -7,7 +7,7 @@ import 'package:buraq_enterprise_admin/utils/widgets/app_scroll_body.dart';
 import 'package:buraq_enterprise_admin/utils/widgets/app_text.dart';
 import 'package:buraq_enterprise_admin/utils/widgets/app_text_field.dart';
 import 'package:buraq_enterprise_admin/utils/widgets/buttons/app_filled_button.dart';
-import 'package:buraq_enterprise_admin/utils/widgets/profile_card.dart';
+import 'package:buraq_enterprise_admin/utils/widgets/app_card_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';
@@ -38,18 +38,17 @@ class EmployeeScreenWidget extends StatelessWidget {
                           shrinkWrap: true,
                           physics: const NeverScrollableScrollPhysics(),
                           itemBuilder: (context, index) {
-                            final String firstName =
-                                _controller.filteredEmployees[index].firstName;
-                            final String lastName =
-                                _controller.filteredEmployees[index].lastName;
-                            final status =
-                                _controller.filteredEmployees[index].status;
-                            final employeeId =
-                                _controller.filteredEmployees[index].empId;
-                            final employeePhone =
-                                _controller.filteredEmployees[index].phone;
+                            final employee =
+                                _controller.filteredEmployees[index];
+                            final String firstName = employee.firstName;
+                            final String lastName = employee.lastName;
+                            final String status = employee.status;
+                            final String employeeId = employee.empId;
+                            final String employeePhone = employee.phone;
+                            final int allocatedAmount = employee.allocatedAmount;
+                            final int spentAmount = int.tryParse('${allocatedAmount - employee.remaining}') ?? 0;
 
-                            return ProfileCard(
+                            return AppCardWidget(
                               cardWidget: Row(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
@@ -90,8 +89,39 @@ class EmployeeScreenWidget extends StatelessWidget {
                                             fontSize: 14,
                                           ),
                                           SizedBox(height: 10),
-                                          contactRow(context, employeePhone, 14,Icons.phone),
-                                          contactRow(context, employeePhone, 14,Icons.business_center_outlined),
+                                          contactRow(
+                                            context,
+                                            employeePhone,
+                                            14,
+                                            Icons.phone,
+                                          ),
+                                          contactRow(
+                                            context,
+                                            employeePhone,
+                                            14,
+                                            Icons.business_center_outlined,
+                                          ),
+                                          SizedBox(height: 10),
+                                          Row(
+                                            children: [
+                                              expenseCard(
+                                                context,
+                                                "Allocated",
+                                                allocatedAmount,
+                                              ),
+                                              SizedBox(
+                                                width:
+                                                    AppConstants
+                                                        .commonHorizontalSpacing /
+                                                    2,
+                                              ),
+                                              expenseCard(
+                                                context,
+                                                "Spent",
+                                                spentAmount,
+                                              ),
+                                            ],
+                                          ),
                                         ],
                                       ),
                                     ),
@@ -122,11 +152,43 @@ class EmployeeScreenWidget extends StatelessWidget {
     );
   }
 
-  Row contactRow(BuildContext context, String employeePhone, double fontSize, IconData icon) {
+  Expanded expenseCard(
+    BuildContext context,
+    String expenseType,
+    int amount,
+  ) {
+    return Expanded(
+      child: Container(
+        padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+        decoration: BoxDecoration(
+          color: context.appColors.background,
+          borderRadius: BorderRadius.circular(AppConstants.cardBorderRadius),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            AppTextHeading(
+              text: expenseType,
+              fontSize: 14,
+              color: context.appColors.secondary,
+            ),
+            AppTextBody(text: AppUtils.formatPKR(amount), fontSize: 14),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Row contactRow(
+    BuildContext context,
+    String employeePhone,
+    double fontSize,
+    IconData icon,
+  ) {
     return Row(
       children: [
         Icon(icon, color: context.appColors.secondary, size: fontSize),
-        SizedBox(width: 5,),
+        SizedBox(width: 5),
         AppTextBody(
           text: employeePhone,
           color: context.appColors.secondary,
@@ -143,10 +205,10 @@ class EmployeeScreenWidget extends StatelessWidget {
   }) {
     final Color bgColor;
     final Color textColor;
-    if (status == EmployeeStatus.active.name) {
+    if (status == Status.active.name) {
       bgColor = context.appColors.colorGreen.withValues(alpha: 0.20);
       textColor = context.appColors.colorGreen;
-    } else if (status == EmployeeStatus.inactive.name) {
+    } else if (status == Status.inactive.name) {
       bgColor = context.appColors.error.withValues(alpha: 0.20);
       textColor = context.appColors.error;
     } else {
@@ -171,16 +233,16 @@ class EmployeeScreenWidget extends StatelessWidget {
   Row statusCards({required BuildContext context}) {
     final employeeLength = _controller.employees.length;
     final activeEmployeeLength = _controller.employees
-        .where((e) => e.status == EmployeeStatus.active.name)
+        .where((e) => e.status == Status.active.name)
         .length;
     final inActiveEmployeeLength = _controller.employees
-        .where((e) => e.status == EmployeeStatus.inactive.name)
+        .where((e) => e.status == Status.inactive.name)
         .length;
 
     return Row(
       children: [
         Expanded(
-          child: ProfileCard(
+          child: AppCardWidget(
             cardWidget: Column(
               children: [
                 AppTextHeading(text: employeeLength.toString()),
@@ -192,7 +254,7 @@ class EmployeeScreenWidget extends StatelessWidget {
         ),
         SizedBox(width: AppConstants.commonHorizontalSpacing),
         Expanded(
-          child: ProfileCard(
+          child: AppCardWidget(
             cardWidget: Column(
               children: [
                 AppTextHeading(
@@ -201,7 +263,7 @@ class EmployeeScreenWidget extends StatelessWidget {
                 ),
                 SizedBox(height: 10),
                 AppTextBody(
-                  text: EmployeeStatus.active.name.capitalize!,
+                  text: Status.active.name.capitalize!,
                   color: context.appColors.secondary,
                 ),
               ],
@@ -210,16 +272,16 @@ class EmployeeScreenWidget extends StatelessWidget {
         ),
         SizedBox(width: AppConstants.commonHorizontalSpacing),
         Expanded(
-          child: ProfileCard(
+          child: AppCardWidget(
             cardWidget: Column(
               children: [
                 AppTextHeading(
                   text: inActiveEmployeeLength.toString(),
-                  color: context.appColors.error,
+                  color: inActiveEmployeeLength <= 0? context.appColors.colorGreen : context.appColors.error,
                 ),
                 SizedBox(height: 10),
                 AppTextBody(
-                  text: EmployeeStatus.inactive.name.capitalize!,
+                  text: Status.inactive.name.capitalize!,
                   color: context.appColors.secondary,
                 ),
               ],

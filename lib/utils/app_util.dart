@@ -88,7 +88,7 @@ class AppUtils {
     final Color backgroundColor;
     switch (vairant) {
       case ToastVariants.success:
-        backgroundColor = context.appColors.primary;
+        backgroundColor = context.appColors.colorGreen;
         break;
       case ToastVariants.error:
         backgroundColor = context.appColors.error;

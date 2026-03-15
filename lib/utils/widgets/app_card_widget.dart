@@ -4,9 +4,9 @@ import 'package:buraq_enterprise_admin/core/config/extensions/app_colors_extensi
 import 'package:buraq_enterprise_admin/core/constants/app_constants.dart';
 import 'package:flutter/material.dart';
 
-class ProfileCard extends StatelessWidget {
+class AppCardWidget extends StatelessWidget {
   final Widget cardWidget;
-  const ProfileCard({super.key, required this.cardWidget});
+  const AppCardWidget({super.key, required this.cardWidget});
 
   @override
   Widget build(BuildContext context) {
