@@ -42,10 +42,15 @@ class AppUtils {
     return null;
   }
 
-  static String? amountValidator({required int value}) {
+  static String? amountValidator({required int? value}) {
+    if (value == null) {
+      return "Please enter amount";
+    }
+
     if (value <= 0) {
       return "Amount must be greater than 0";
     }
+
     return null;
   }
 
@@ -59,9 +64,18 @@ class AppUtils {
     return formattedPhone;
   }
 
-  static getNameInitalsContainer({required String firstName, required String lastName, required AppColorScheme colorScheme, double size = 75.0}) {
-    final String firstNameInitial = firstName.isEmpty ? '' : firstName[0].toUpperCase();
-    final String lastNameInitial = lastName.isEmpty ? '' :lastName[0].toUpperCase();
+  static getNameInitalsContainer({
+    required String firstName,
+    required String lastName,
+    required AppColorScheme colorScheme,
+    double size = 75.0,
+  }) {
+    final String firstNameInitial = firstName.isEmpty
+        ? ''
+        : firstName[0].toUpperCase();
+    final String lastNameInitial = lastName.isEmpty
+        ? ''
+        : lastName[0].toUpperCase();
     return Container(
       alignment: Alignment.center,
       width: size,
@@ -72,7 +86,7 @@ class AppUtils {
       ),
       child: AppTextHeading(
         text: "$firstNameInitial$lastNameInitial",
-        fontSize: size/2,
+        fontSize: size / 2,
         color: colorScheme.outline,
       ),
     );

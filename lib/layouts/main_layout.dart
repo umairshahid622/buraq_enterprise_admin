@@ -8,6 +8,7 @@ import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class MainLayout extends StatelessWidget {
+  
   final StatefulNavigationShell navigationShell;
   const MainLayout({super.key, required this.navigationShell});
 
@@ -41,11 +42,12 @@ class MainLayout extends StatelessWidget {
         "heading": "Profile & Settings",
         "subHeading": "Manage your account preferences",
       },
+      
     };
 
     return Scaffold(
       appBar: AppBar(
-        toolbarHeight: 80,
+        toolbarHeight: AppConstants.appBarHight,
         leading:
             isNestedRoute
                 ? IconButton(
@@ -66,7 +68,7 @@ class MainLayout extends StatelessWidget {
               text: titles[location]?["heading"] ?? "",
               fontSize: AppConstants.mainHeadingFontSize,
             ),
-            SizedBox(height: 10,),
+            SizedBox(height: 2.5,),
             AppTextBody(
               text: titles[location]?["subHeading"] ?? "",
               color: context.appColors.secondary,

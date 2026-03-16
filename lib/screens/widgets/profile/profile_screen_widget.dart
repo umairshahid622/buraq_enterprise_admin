@@ -40,7 +40,11 @@ class ProfileScreenWidget extends StatelessWidget {
             SizedBox(height: spacing / 2),
             AppTextHeading(text: "Account", fontSize: 22),
             SizedBox(height: spacing / 4),
-            AppCardWidget(cardWidget: getChangeNameCard(context)),
+            InkWell(
+              onTap: (){
+                context.push('/profile/change-name');
+              },
+              child: AppCardWidget(cardWidget: getChangeNameCard(context))),
             SizedBox(height: spacing),
             _logoutButton(profileWidgetController),
           ],
@@ -50,31 +54,26 @@ class ProfileScreenWidget extends StatelessWidget {
   }
 
   Widget getChangeNameCard(BuildContext context) {
-    return GestureDetector(
-      onTap: () {
-        context.push('/profile/change-name');
-      },
-      child: Row(
-        children: [
-          Icon(
-            Icons.account_circle_outlined,
-            size: 25,
-            color: context.appColors.secondary,
-          ),
-          SizedBox(width: 15),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              AppTextHeading(text: "Change Name", fontSize: 18),
-              AppTextBody(
-                text: "Change Your First and Last Name",
-                fontSize: 14,
-                color: context.appColors.secondary,
-              ),
-            ],
-          ),
-        ],
-      ),
+    return Row(
+      children: [
+        Icon(
+          Icons.account_circle_outlined,
+          size: 25,
+          color: context.appColors.secondary,
+        ),
+        SizedBox(width: 15),
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            AppTextHeading(text: "Change Name", fontSize: 18),
+            AppTextBody(
+              text: "Change Your First and Last Name",
+              fontSize: 14,
+              color: context.appColors.secondary,
+            ),
+          ],
+        ),
+      ],
     );
   }
 

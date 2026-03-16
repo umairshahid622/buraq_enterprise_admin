@@ -73,7 +73,7 @@ class AppTextField extends StatelessWidget {
         break;
       default:
         keyBoardType = TextInputType.text;
-        defaultPrefixIcon = null;
+        defaultPrefixIcon = Icon(Icons.edit_note_rounded);
         break;
     }
 
@@ -82,7 +82,10 @@ class AppTextField extends StatelessWidget {
       return Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          if (labelText != null) AppTextBody(text: labelText!, fontSize: 14),
+          if (labelText != null) Padding(
+            padding: EdgeInsets.symmetric(horizontal: AppConstants.textFieldLabelMargin),
+            child: AppTextHeading(text: labelText!, fontSize: 14),
+          ),
           if (labelText != null) const SizedBox(height: 8),
 
           TextFormField(
@@ -110,7 +113,7 @@ class AppTextField extends StatelessWidget {
               } else if (type == TextFieldType.text) {
                 return AppUtils.textValidator(value: value ?? "");
               } else if (type == TextFieldType.amount){
-                return AppUtils.amountValidator(value: int.parse(value ?? '0'));
+                return AppUtils.amountValidator(value: int.tryParse(value ?? ""));
               } else {
                 return null;
               }
