@@ -1,4 +1,3 @@
-import 'package:buraq_enterprise_admin/screens/controllers/common/employee_controller.dart';
 import 'package:buraq_enterprise_admin/screens/controllers/common/user_controller.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:get/get.dart';
@@ -9,15 +8,12 @@ class SplashController extends GetxController {
   final _auth = FirebaseAuth.instance;
 
   late final UserController _userController;
-  late final EmployeeController _employeeController;
 
   @override
   void onInit() {
     super.onInit();
 
-    // Find dependencies
     _userController = Get.find<UserController>();
-    _employeeController = Get.find<EmployeeController>();
 
     _bootstrap();
   }
@@ -27,7 +23,6 @@ class SplashController extends GetxController {
 
     if (user != null) {
       await _userController.fetchUserProfile();
-      await _employeeController.fetchEmployees();
       
     }
 

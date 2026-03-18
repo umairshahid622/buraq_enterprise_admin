@@ -1,7 +1,7 @@
 import 'package:buraq_enterprise_admin/core/config/extensions/app_colors_extension.dart';
 import 'package:buraq_enterprise_admin/core/constants/app_constants.dart';
 import 'package:buraq_enterprise_admin/core/constants/app_enum.dart';
-import 'package:buraq_enterprise_admin/screens/controllers/common/employee_controller.dart';
+import 'package:buraq_enterprise_admin/screens/controllers/employees/employee_controller.dart';
 import 'package:buraq_enterprise_admin/screens/controllers/projects/add_project_screen_controller.dart';
 import 'package:buraq_enterprise_admin/utils/app_util.dart';
 import 'package:buraq_enterprise_admin/utils/widgets/app_scroll_body.dart';

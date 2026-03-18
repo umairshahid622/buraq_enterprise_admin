@@ -1,7 +1,7 @@
 import 'package:buraq_enterprise_admin/core/config/extensions/app_colors_extension.dart';
 import 'package:buraq_enterprise_admin/core/constants/app_constants.dart';
 import 'package:buraq_enterprise_admin/core/constants/app_enum.dart';
-import 'package:buraq_enterprise_admin/screens/controllers/common/employee_controller.dart';
+import 'package:buraq_enterprise_admin/screens/controllers/employees/employee_controller.dart';
 import 'package:buraq_enterprise_admin/utils/app_util.dart';
 import 'package:buraq_enterprise_admin/utils/widgets/app_scroll_body.dart';
 import 'package:buraq_enterprise_admin/utils/widgets/app_text.dart';
@@ -13,146 +13,176 @@ import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';
 
 class EmployeeScreenWidget extends StatelessWidget {
-  EmployeeScreenWidget({super.key});
-  final EmployeeController _controller = Get.find<EmployeeController>();
+  const EmployeeScreenWidget({super.key});
 
   @override
   Widget build(BuildContext context) {
     double screnHeight = MediaQuery.of(context).size.height;
-    return Column(
-      children: [
-        employeeHeader(context),
-        Expanded(
-          child: AppScrollableBody(
-            child: Padding(
-              padding: EdgeInsets.only(top: screnHeight * 0.05),
-              child: Column(
-                children: [
-                  Obx(() {
-                    return Column(
-                      children: [
-                        statusCards(context: context),
-                        SizedBox(height: AppConstants.commonVerticalSpacing),
-                        ListView.separated(
-                          itemCount: _controller.filteredEmployees.length,
-                          shrinkWrap: true,
-                          physics: const NeverScrollableScrollPhysics(),
-                          itemBuilder: (context, index) {
-                            final employee =
-                                _controller.filteredEmployees[index];
-                            final String firstName = employee.firstName;
-                            final String lastName = employee.lastName;
-                            final String status = employee.status;
-                            final String employeeId = employee.empId;
-                            final String employeePhone = employee.phone;
-                            final int allocatedAmount = employee.allocatedAmount;
-                            final int spentAmount = int.tryParse('${allocatedAmount - employee.remaining}') ?? 0;
-
-                            return AppCardWidget(
-                              cardWidget: Row(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  AppUtils.getNameInitalsContainer(
-                                    colorScheme: context.appColors,
-                                    firstName: firstName,
-                                    lastName: '',
-                                    size: 44,
-                                  ),
-                                  Expanded(
-                                    child: Container(
-                                      margin: EdgeInsets.symmetric(
-                                        horizontal: AppConstants
-                                            .commonHorizontalSpacing,
-                                      ),
-                                      child: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Row(
-                                            children: [
-                                              Flexible(
-                                                child: AppTextBody(
-                                                  text: '$firstName $lastName',
-                                                ),
-                                              ),
-                                              SizedBox(width: 12),
-                                              AppUtils.statusContainer(
-                                                context: context,
-                                                status: status,
-                                                fontSize: 13,
-                                              ),
-                                            ],
-                                          ),
-                                          AppTextBody(
-                                            text: employeeId,
-                                            color: context.appColors.secondary,
-                                            fontSize: 14,
-                                          ),
-                                          SizedBox(height: 10),
-                                          contactRow(
-                                            context,
-                                            employeePhone,
-                                            14,
-                                            Icons.phone,
-                                          ),
-                                          contactRow(
-                                            context,
-                                            employeePhone,
-                                            14,
-                                            Icons.business_center_outlined,
-                                          ),
-                                          SizedBox(height: 10),
-                                          Row(
-                                            children: [
-                                              AppUtils.expenseCard(
-                                                context,
-                                                "Allocated",
-                                                allocatedAmount,
-                                              ),
-                                              SizedBox(
-                                                width:
-                                                    AppConstants
-                                                        .commonHorizontalSpacing /
-                                                    2,
-                                              ),
-                                              AppUtils.expenseCard(
-                                                context,
-                                                "Spent",
-                                                spentAmount,
-                                              ),
-                                            ],
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  ),
-                                  Icon(
-                                    Icons.more_vert,
-                                    color: context.appColors.secondary,
-                                  ),
-                                ],
-                              ),
-                            );
-                          },
-                          separatorBuilder: (context, index) {
-                            return SizedBox(
+    return GetBuilder<EmployeeController>(
+      init: EmployeeController(),
+      builder: (controller) {
+        return Column(
+          children: [
+            employeeHeader(context, controller),
+            Expanded(
+              child: AppScrollableBody(
+                centerContent: controller.employees.isEmpty,
+                child: Padding(
+                  padding: EdgeInsets.only(top: screnHeight * 0.05),
+                  child: Column(
+                    children: [
+                      Obx(() {
+                        if (controller.isLoading.value) {
+                          return const Center(
+                            child: Padding(
+                              padding: EdgeInsets.all(20.0),
+                              child: CircularProgressIndicator(),
+                            ),
+                          );
+                        }
+                        if (controller.employees.isEmpty &&
+                            !controller.isLoading.value) {
+                          return AppTextHeading(text: "No Employees Found");
+                        }
+                        return Column(
+                          children: [
+                            statusCards(
+                              context: context,
+                              controller: controller,
+                            ),
+                            SizedBox(
                               height: AppConstants.commonVerticalSpacing,
-                            );
-                          },
-                        ),
-                      ],
-                    );
-                  }),
-                ],
+                            ),
+                              controller.filteredEmployees.isEmpty ? AppTextHeading(text: "No employees found based on your search", fontSize: 16,) : SizedBox.shrink(),
+
+                            ListView.separated(
+                              itemCount: controller.filteredEmployees.length,
+                              shrinkWrap: true,
+                              physics: const NeverScrollableScrollPhysics(),
+                              itemBuilder: (context, index) {
+                                final employee =
+                                    controller.filteredEmployees[index];
+                                final String firstName = employee.firstName;
+                                final String lastName = employee.lastName;
+                                final String status = employee.status;
+                                final String employeeId = employee.empId;
+                                final String employeePhone = employee.phone;
+                                final int allocatedAmount =
+                                    employee.allocatedAmount;
+                                final int spentAmount =
+                                    int.tryParse(
+                                      '${allocatedAmount - employee.remaining}',
+                                    ) ??
+                                    0;
+
+                                return AppCardWidget(
+                                  cardWidget: Row(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      AppUtils.getNameInitalsContainer(
+                                        colorScheme: context.appColors,
+                                        firstName: firstName,
+                                        lastName: '',
+                                        size: 44,
+                                      ),
+                                      Expanded(
+                                        child: Container(
+                                          margin: EdgeInsets.symmetric(
+                                            horizontal: AppConstants
+                                                .commonHorizontalSpacing,
+                                          ),
+                                          child: Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              Row(
+                                                children: [
+                                                  Flexible(
+                                                    child: AppTextBody(
+                                                      text:
+                                                          '$firstName $lastName',
+                                                    ),
+                                                  ),
+                                                  SizedBox(width: 12),
+                                                  AppUtils.statusContainer(
+                                                    context: context,
+                                                    status: status,
+                                                    fontSize: 13,
+                                                  ),
+                                                ],
+                                              ),
+                                              AppTextBody(
+                                                text: employeeId,
+                                                color:
+                                                    context.appColors.secondary,
+                                                fontSize: 14,
+                                              ),
+                                              SizedBox(height: 10),
+                                              contactRow(
+                                                context,
+                                                employeePhone,
+                                                14,
+                                                Icons.phone,
+                                              ),
+                                              contactRow(
+                                                context,
+                                                employeePhone,
+                                                14,
+                                                Icons.business_center_outlined,
+                                              ),
+                                              SizedBox(height: 10),
+                                              Row(
+                                                children: [
+                                                  AppUtils.expenseCard(
+                                                    context,
+                                                    "Allocated",
+                                                    allocatedAmount,
+                                                  ),
+                                                  SizedBox(
+                                                    width:
+                                                        AppConstants
+                                                            .commonHorizontalSpacing /
+                                                        2,
+                                                  ),
+                                                  AppUtils.expenseCard(
+                                                    context,
+                                                    "Spent",
+                                                    spentAmount,
+                                                  ),
+                                                ],
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ),
+                                      Icon(
+                                        Icons.more_vert,
+                                        color: context.appColors.secondary,
+                                      ),
+                                    ],
+                                  ),
+                                );
+                              },
+                              separatorBuilder: (context, index) {
+                                return SizedBox(
+                                  height: AppConstants.commonVerticalSpacing,
+                                );
+                              },
+                            ),
+                          ],
+                        );
+                      }),
+                    ],
+                  ),
+                ),
               ),
             ),
-          ),
-        ),
-      ],
+          ],
+        );
+      },
     );
   }
-
-
 
   Row contactRow(
     BuildContext context,
@@ -173,14 +203,15 @@ class EmployeeScreenWidget extends StatelessWidget {
     );
   }
 
-
-
-  Row statusCards({required BuildContext context}) {
-    final employeeLength = _controller.employees.length;
-    final activeEmployeeLength = _controller.employees
+  Row statusCards({
+    required BuildContext context,
+    required EmployeeController controller,
+  }) {
+    final employeeLength = controller.employees.length;
+    final activeEmployeeLength = controller.employees
         .where((e) => e.status == Status.active.name)
         .length;
-    final inActiveEmployeeLength = _controller.employees
+    final inActiveEmployeeLength = controller.employees
         .where((e) => e.status == Status.inactive.name)
         .length;
 
@@ -222,7 +253,9 @@ class EmployeeScreenWidget extends StatelessWidget {
               children: [
                 AppTextHeading(
                   text: inActiveEmployeeLength.toString(),
-                  color: inActiveEmployeeLength <= 0? context.appColors.colorGreen : context.appColors.error,
+                  color: inActiveEmployeeLength <= 0
+                      ? context.appColors.colorGreen
+                      : context.appColors.error,
                 ),
                 SizedBox(height: 10),
                 AppTextBody(
@@ -237,12 +270,12 @@ class EmployeeScreenWidget extends StatelessWidget {
     );
   }
 
-  Row employeeHeader(BuildContext context) {
+  Row employeeHeader(BuildContext context, EmployeeController controller) {
     return Row(
       children: [
         Expanded(
           child: AppTextField(
-            controller: _controller.searchController,
+            controller: controller.searchController,
             hintText: "Search employee...",
             prefixIcon: const Icon(Icons.search),
           ),

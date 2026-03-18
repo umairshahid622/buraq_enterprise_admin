@@ -31,10 +31,18 @@ class ProjectScreenWidget extends StatelessWidget {
                   padding: EdgeInsets.symmetric(vertical: screenHeight * 0.05),
                   child: Column(
                     children: [
-                      controller.isLoading
-                          ? const AppSpiner()
-                          : SizedBox.shrink(),
-                      !controller.isLoading
+                       Obx(() {
+                        if (controller.isLoading.value) {
+                          return const Center(
+                            child: Padding(
+                              padding: EdgeInsets.all(20.0),
+                              child: CircularProgressIndicator(),
+                            ),
+                          );
+                        }
+                        return SizedBox.shrink();
+                       }),
+                      !controller.isLoading.value
                           ? ListView.separated(
                               physics: const NeverScrollableScrollPhysics(),
                               shrinkWrap: true,

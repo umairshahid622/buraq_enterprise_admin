@@ -6,29 +6,24 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class EmployeeController extends GetxController {
-  final EmployeeRepository _employeeRepository;
 
-  EmployeeController(this._employeeRepository);
+  EmployeeController();
 
-  // ---------------------------
-  // Controllers
-  // ---------------------------
+
+  final EmployeeRepository _employeeRepository = EmployeeRepository();
+
+
   final TextEditingController searchController = TextEditingController();
 
-  // ---------------------------
-  // Reactive State
-  // ---------------------------
   final RxString searchQuery = ''.obs;
 
   final RxList<Employee> employees = <Employee>[].obs;
 
-  final RxBool isLoading = false.obs;
+  final RxBool isLoading = true.obs;
 
   final RxString errorMessage = ''.obs;
 
-  // ---------------------------
-  // Lifecycle
-  // ---------------------------
+
   @override
   void onInit() {
     super.onInit();
@@ -37,42 +32,23 @@ class EmployeeController extends GetxController {
   }
 
   @override
+  void onReady() {   
+    super.onReady();
+    employees.bindStream(_employeeRepository.fetchEmployees());
+
+    ever(employees, (_) {
+      if (isLoading.value) {
+        isLoading.value = false;
+      }
+      update();
+    });
+
+  }
+
+  @override
   void onClose() {
     searchController.dispose();
     super.onClose();
-  }
-
-  // ---------------------------
-  // Fetch Employees
-  // ---------------------------
-  Future<List<Employee>> fetchEmployees() async {
-    try {
-      isLoading.value = true;
-      errorMessage.value = '';
-
-      final result = await _employeeRepository.fetchEmployees();
-
-      employees.assignAll(result);
-
-      return result;
-    } catch (e) {
-      final String msg = AppUtils.getFirebaseErrorMessage(
-        message: e.toString(),
-      );
-
-      print("Errror While Fetching the EMployee: $e");
-
-      AppUtils.showToast(
-        label: msg,
-        vairant: ToastVariants.error,
-      );
-
-      errorMessage.value = msg;
-
-      return [];
-    } finally {
-      isLoading.value = false;
-    }
   }
 
   // ---------------------------

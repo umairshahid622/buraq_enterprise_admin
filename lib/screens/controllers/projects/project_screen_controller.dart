@@ -9,7 +9,8 @@ class ProjectScreenController extends GetxController {
 
   final RxList<ProjectModel> projects = <ProjectModel>[].obs;
 
-  bool isLoading = true;
+  RxBool isLoading = true.obs;
+  
 
   @override
   void onInit() {
@@ -21,8 +22,8 @@ class ProjectScreenController extends GetxController {
     super.onReady();
     projects.bindStream(projectRepository.fetchProjects());
     ever(projects, (_) {
-      if (isLoading) {
-        isLoading = false;
+      if (isLoading.value) {
+        isLoading.value = false;
       }
       update();
     });

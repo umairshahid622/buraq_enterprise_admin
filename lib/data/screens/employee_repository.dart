@@ -57,14 +57,27 @@ class EmployeeRepository {
     batch.commit();
   }
 
-  Future<List<Employee>> fetchEmployees() async {
-    final snapshot = await _db
-        .collection('users')
-        .where('role', isEqualTo: 'employee')
-        .get();
 
-    return snapshot.docs.map((doc) => Employee.fromFirestore(doc)).toList();
+  Stream<List<Employee>> fetchEmployees() {
+    return _db
+        .collection('users')
+        .where('role', isEqualTo: Roles.employee.name)
+        .snapshots()
+        .map((snapShot) {
+      return snapShot.docs.map((doc) {
+        return Employee.fromSnapshot(doc);
+      }).toList();
+    });
   }
+
+  // Future<List<Employee>> fetchEmployees() async {
+  //   final snapshot = await _db
+  //       .collection('users')
+  //       .where('role', isEqualTo: 'employee')
+  //       .get();
+
+  //   return snapshot.docs.map((doc) => Employee.fromFirestore(doc)).toList();
+  // }
 
   Future allocateAmountHistory({
     required String allocateBy,
