@@ -3,6 +3,7 @@ import 'package:buraq_enterprise_admin/core/constants/app_constants.dart';
 import 'package:buraq_enterprise_admin/core/constants/app_enum.dart';
 import 'package:buraq_enterprise_admin/screens/controllers/common/employee_controller.dart';
 import 'package:buraq_enterprise_admin/screens/controllers/projects/add_project_screen_controller.dart';
+import 'package:buraq_enterprise_admin/utils/app_util.dart';
 import 'package:buraq_enterprise_admin/utils/widgets/app_scroll_body.dart';
 import 'package:buraq_enterprise_admin/utils/widgets/app_text.dart';
 import 'package:buraq_enterprise_admin/utils/widgets/app_text_field.dart';
@@ -55,6 +56,7 @@ class AddProjectScreenWidget extends StatelessWidget {
                         onTapCallBack: () {
                           _selectDate(
                             context: context,
+                            controller: controller,
                             dateController: controller.startDateController,
                           );
                         },
@@ -69,8 +71,17 @@ class AddProjectScreenWidget extends StatelessWidget {
                         labelText: "End Date",
                         prefixIcon: const Icon(Icons.calendar_month),
                         onTapCallBack: () {
+                          if (controller.startDateController.text.isEmpty) {
+                            AppUtils.showToast(
+                              label: "Please select a start date first",
+                              vairant: ToastVariants.error,
+                            );
+                            return;
+                          }
                           _selectDate(
                             context: context,
+                            controller: controller,
+
                             dateController: controller.endDateController,
                           );
                         },
@@ -102,15 +113,29 @@ class AddProjectScreenWidget extends StatelessWidget {
                   employeeController: employeeController,
                 ),
                 spacing,
-                AppFilledButton(onPressedCallBack: (){
-                  controller.createProject(context: context);
-                }, buttonText: "Add a Project")
+                addProjectBtn(controller, context),
               ],
             ),
           ),
         );
       },
     );
+  }
+
+  Obx addProjectBtn(
+    AddProjectScreenController controller,
+    BuildContext context,
+  ) {
+    return Obx(() {
+      return AppFilledButton(
+        isEnable: !controller.isLoading.value,
+        isLoading: controller.isLoading.value,        
+        onPressedCallBack: () {
+          controller.createProject(context: context);
+        },
+        buttonText: "Add a Project",
+      );
+    });
   }
 
   Widget _multiSelectEmployeesDropdown({
@@ -129,97 +154,133 @@ class AddProjectScreenWidget extends StatelessWidget {
         ? "Select Employees"
         : selectedNames;
 
-    return DropdownButtonHideUnderline(
-      child: DropdownButton2<String>(
-        isExpanded: true,
+    return FormField<List<String>>(
+      validator: (value) {
+        if (controller.selectedEmployeeIds.isEmpty) {
+          return 'Please select at least one employee';
+        }
+        return null;
+      },
+      builder: (FormFieldState<List<String>> state) {
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            DropdownButtonHideUnderline(
+              child: DropdownButton2<String>(
+                isExpanded: true,
 
-        hint: AppTextBody(
-          text: displayText,
-          color: context.appColors.secondary,
-        ),
-        items: employeeController.employees.isEmpty
-            ? [
-                DropdownItem<String>(
-                  value: '',
-                  enabled: false,
-                  child: AppTextBody(
-                    text: "No employees available",
-                    color: context.appColors.secondary,
-                  ),
+                hint: AppTextBody(
+                  text: displayText,
+                  color: context.appColors.secondary,
                 ),
-              ]
-            : employeeController.employees.map((employee) {
-                return DropdownItem<String>(
-                  value: employee.empId,
-                  enabled: false,
-                  child: StatefulBuilder(
-                    builder: (context, menuSetState) {
-                      final isSelected = controller.isEmployeeSelected(
-                        employee.empId,
-                      );
-                      return InkWell(
-                        onTap: () {
-                          controller.toggleEmployee(employee.empId);
-                          menuSetState(() {});
-                        },
-                        child: SizedBox(
-                          height: 56,
-                          child: Row(
-                            children: [
-                              Expanded(
-                                child: AppTextBody(
-                                  text:
-                                      "${employee.firstName} ${employee.lastName}",
-                                  fontSize: 14,
-                                ),
-                              ),
-                              Icon(
-                                Icons.check,
-                                size: 16,
-                                color: isSelected
-                                    ? context.appColors.primary
-                                    : Colors.transparent,
-                              ),
-                            ],
+                items: employeeController.employees.isEmpty
+                    ? [
+                        DropdownItem<String>(
+                          value: '',
+                          enabled: false,
+                          child: AppTextBody(
+                            text: "No employees available",
+                            color: context.appColors.secondary,
                           ),
                         ),
-                      );
-                    },
+                      ]
+                    : employeeController.employees.map((employee) {
+                        return DropdownItem<String>(
+                          value: employee.empId,
+                          enabled: false,
+                          child: StatefulBuilder(
+                            builder: (context, menuSetState) {
+                              final isSelected = controller.isEmployeeSelected(
+                                employee.empId,
+                              );
+                              return InkWell(
+                                onTap: () {
+                                  controller.toggleEmployee(employee.empId);
+                                  state.didChange(
+                                    controller.selectedEmployeeIds,
+                                  );
+                                  menuSetState(() {});
+                                },
+                                child: SizedBox(
+                                  height: 56,
+                                  child: Row(
+                                    children: [
+                                      Expanded(
+                                        child: AppTextBody(
+                                          text:
+                                              "${employee.firstName} ${employee.lastName}",
+                                          fontSize: 14,
+                                        ),
+                                      ),
+                                      Icon(
+                                        Icons.check,
+                                        size: 16,
+                                        color: isSelected
+                                            ? context.appColors.primary
+                                            : Colors.transparent,
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              );
+                            },
+                          ),
+                        );
+                      }).toList(),
+                onChanged: (_) {},
+                selectedItemBuilder: (context) {
+                  return employeeController.employees.map((_) {
+                    return AppTextBody(text: displayText);
+                  }).toList();
+                },
+                buttonStyleData: ButtonStyleData(
+                  elevation: 0,
+                  height: 56,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(
+                      AppConstants.borderRadius,
+                    ),
+                    border: Border.all(
+                      color: state.hasError
+                          ? Colors.red
+                          : context.appColors.outline,
+                    ),
                   ),
-                );
-              }).toList(),
-        onChanged: (_) {},
-        selectedItemBuilder: (context) {
-          return employeeController.employees.map((_) {
-            return AppTextBody(text: displayText);
-          }).toList();
-        },
-        buttonStyleData: ButtonStyleData(
-          elevation: 0,
-          height: 56,
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(AppConstants.borderRadius),
-            border: Border.all(color: context.appColors.outline),
-          ),
-        ),
-        dropdownStyleData: DropdownStyleData(
-          offset: Offset(0, -5),
-          maxHeight: 280,
-          elevation: 1,
-          decoration: BoxDecoration(
-            border: Border.all(color: context.appColors.outline),
-            borderRadius: BorderRadius.circular(AppConstants.borderRadius),
-          ),
-        ),
-        iconStyleData: const IconStyleData(
-          icon: Icon(Icons.keyboard_arrow_down),
-        ),
-      ),
+                ),
+                dropdownStyleData: DropdownStyleData(
+                  offset: const Offset(0, -5),
+                  maxHeight: 280,
+                  elevation: 1,
+                  decoration: BoxDecoration(
+                    border: Border.all(color: context.appColors.outline),
+                    borderRadius: BorderRadius.circular(
+                      AppConstants.borderRadius,
+                    ),
+                  ),
+                ),
+                iconStyleData: const IconStyleData(
+                  icon: Icon(Icons.keyboard_arrow_down),
+                ),
+              ),
+            ),
+            if (state.hasError)
+              Padding(
+                padding: const EdgeInsets.only(top: 8.0, left: 12.0),
+                child: AppTextBody(
+                  text: state.errorText!,
+                  color: Colors.red,
+                  fontSize: 12,
+                ),
+              ),
+          ],
+        );
+      },
     );
   }
 
   Future<void> _selectDate({
     required BuildContext context,
+    required AddProjectScreenController controller,
     required TextEditingController dateController,
   }) async {
     DateTime? selectedDate = await showDatePicker(
@@ -227,7 +288,9 @@ class AddProjectScreenWidget extends StatelessWidget {
       initialDate: dateController.text.isEmpty
           ? DateTime.now()
           : DateTime.parse(dateController.text),
-      firstDate: DateTime(2000),
+      firstDate: controller.startDateController.text.isNotEmpty
+          ? DateTime.parse(controller.startDateController.text)
+          : DateTime(2000),
       lastDate: DateTime(2100),
     );
     if (selectedDate != null) {

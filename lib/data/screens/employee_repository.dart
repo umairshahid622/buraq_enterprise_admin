@@ -89,12 +89,11 @@ class EmployeeRepository {
   }
 
   Future<String> _generateEmployeeId({required String phoneNumber}) async {
-    final db = FirebaseFirestore.instance;
 
-    final counterRef = db.collection('counters').doc('employees');
-    final usersRef = db.collection('users');
+    final counterRef = _db.collection('counters').doc('employees');
+    final usersRef = _db.collection('users');
 
-    return db.runTransaction((transaction) async {
+    return _db.runTransaction((transaction) async {
       final phoneQuery = await usersRef
           .where('phone', isEqualTo: phoneNumber)
           .limit(1)

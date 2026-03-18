@@ -10,21 +10,11 @@ class AddProjectScreenController extends GetxController {
   final TextEditingController startDateController = TextEditingController();
   final TextEditingController endDateController = TextEditingController();
   final TextEditingController totalBudgetAllocatedController = TextEditingController();
-  
+  final isLoading = false.obs;
+
 
   final List<String> selectedEmployeeIds = [];
-  
 
-
-  @override
-  void onInit() {
-    super.onInit();
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
-  }
 
   bool isEmployeeSelected(String empId) {
     return selectedEmployeeIds.contains(empId);
@@ -43,6 +33,8 @@ class AddProjectScreenController extends GetxController {
     if (formKey.currentState!.validate()) {    
       return;
     }
+
+    
 
   }
 }
