@@ -6,10 +6,9 @@ class ProjectRepository {
   final FirebaseFirestore _db = FirebaseFirestore.instance;
   final FirebaseAuth _auth = FirebaseAuth.instance;
 
-
-  Stream<List<ProjectModel>> fetchProjects () {
-    return _db.collection("collectionPath").snapshots().map((snapShot){
-      return snapShot.docs.map((doc){
+  Stream<List<ProjectModel>> fetchProjects() {
+    return _db.collection("projects").snapshots().map((snapShot) {
+      return snapShot.docs.map((doc) {
         return ProjectModel.fromSnapshot(doc);
       }).toList();
     });
@@ -31,7 +30,7 @@ class ProjectRepository {
     await _db.runTransaction((transaction) async {
       DocumentSnapshot projectSnap = await transaction.get(projectRef);
 
-      if (projectSnap.exists) {       
+      if (projectSnap.exists) {
         throw Exception("Project '$projectName' already exists!");
       }
 
@@ -43,6 +42,7 @@ class ProjectRepository {
         'startDate': startDate,
         'endDate': endDate,
         'totalBudgetAllocated': totalBudgetAllocated,
+        'remainingBudget': totalBudgetAllocated,
         'status': 'active',
         'createdBy': _auth.currentUser!.uid,
         'updatedBy': _auth.currentUser!.uid,
@@ -84,5 +84,22 @@ class ProjectRepository {
 
       return 'PRJ${newId.toString().padLeft(3, '0')}';
     });
+  }
+
+  Future<void> addRemainingAmountToAllProject() async {
+    final collection = FirebaseFirestore.instance.collection('projects');
+
+    final snapshots = await collection.get();
+
+    WriteBatch batch = FirebaseFirestore.instance.batch();
+
+    for (var doc in snapshots.docs) {
+      final data = doc.data();
+      final totalBudgetAllocated = data['totalBudgetAllocated'];
+
+      batch.update(doc.reference, {'remainingBudget': totalBudgetAllocated});      
+    }
+
+    batch.commit();
   }
 }

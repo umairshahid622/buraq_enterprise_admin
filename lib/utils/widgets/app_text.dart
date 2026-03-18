@@ -24,6 +24,7 @@ class AppTextHeading extends StatelessWidget {
         text,
         style: GoogleFonts.quicksand(
           fontSize: fontSize,
+          height: 1,
           fontWeight: fontWeight,
           color: color ?? colors.text,
         ),
@@ -56,8 +57,9 @@ class AppTextBody extends StatelessWidget {
         textAlign: textAlign,
         style: GoogleFonts.inter(        
           fontSize: fontSize,
+          height: 1.5,
           fontWeight: fontWeight,
-          color: color ?? colors.text,
+          color: color ?? colors.secondary,
         ),
       );
     });

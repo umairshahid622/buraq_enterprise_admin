@@ -76,7 +76,7 @@ class EmployeeScreenWidget extends StatelessWidget {
                                                 ),
                                               ),
                                               SizedBox(width: 12),
-                                              statusContainer(
+                                              AppUtils.statusContainer(
                                                 context: context,
                                                 status: status,
                                                 fontSize: 13,
@@ -198,37 +198,7 @@ class EmployeeScreenWidget extends StatelessWidget {
     );
   }
 
-  Container statusContainer({
-    required BuildContext context,
-    required String status,
-    double? fontSize,
-  }) {
-    final Color bgColor;
-    final Color textColor;
-    if (status == Status.active.name) {
-      bgColor = context.appColors.colorGreen.withValues(alpha: 0.20);
-      textColor = context.appColors.colorGreen;
-    } else if (status == Status.inactive.name) {
-      bgColor = context.appColors.error.withValues(alpha: 0.20);
-      textColor = context.appColors.error;
-    } else {
-      bgColor = context.appColors.secondary.withValues(alpha: 0.20);
-      textColor = context.appColors.secondary;
-    }
-    if (status.isEmpty) {
-      return Container();
-    }
-    return Container(
-      decoration: BoxDecoration(
-        color: bgColor,
-        borderRadius: BorderRadius.circular(15),
-        border: Border.all(color: textColor, width: 1),
-      ),
 
-      padding: EdgeInsets.symmetric(horizontal: 12, vertical: 2),
-      child: AppTextBody(text: status, color: textColor, fontSize: fontSize),
-    );
-  }
 
   Row statusCards({required BuildContext context}) {
     final employeeLength = _controller.employees.length;

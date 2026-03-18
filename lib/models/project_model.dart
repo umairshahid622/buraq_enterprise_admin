@@ -7,6 +7,7 @@ class ProjectModel {
   final DateTime startDate;
   final DateTime endDate;
   final int totalBudgetAllocated;
+  final int remainingBudget;
   final String status;
   final String createdBy;
   final String updatedBy;
@@ -21,6 +22,7 @@ class ProjectModel {
     required this.startDate,
     required this.endDate,
     required this.totalBudgetAllocated,
+    required this.remainingBudget,
     required this.status,
     required this.createdBy,
     required this.updatedBy,
@@ -39,6 +41,7 @@ class ProjectModel {
       startDate: (data['startDate'] as Timestamp).toDate(),
       endDate: (data['endDate'] as Timestamp).toDate(),
       totalBudgetAllocated: data['totalBudgetAllocated'] ?? 0,
+      remainingBudget: data['remainingBudget'] ?? 0,
       status: data['status'] ?? 'active',
       createdBy: data['createdBy'] ?? '',
       updatedBy: data['updatedBy'] ?? '',
@@ -56,6 +59,7 @@ class ProjectModel {
       'startDate': startDate,
       'endDate': endDate,
       'totalBudgetAllocated': totalBudgetAllocated,
+      'remainingBudget': remainingBudget,
       'status': status,
       'createdBy': createdBy,
       'updatedBy': updatedBy,

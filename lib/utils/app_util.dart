@@ -305,4 +305,43 @@ class AppUtils {
       ),
     );
   }
+
+  static Container statusContainer({
+    required BuildContext context,
+    required String status,
+    double? fontSize,
+  }) {
+    final Color bgColor;
+    final Color textColor;
+    if (status == Status.active.name) {
+      bgColor = context.appColors.colorGreen.withValues(alpha: 0.20);
+      textColor = context.appColors.colorGreen;
+    } else if (status == Status.inactive.name) {
+      bgColor = context.appColors.error.withValues(alpha: 0.20);
+      textColor = context.appColors.error;
+    } else if (status == Status.completed.name){
+      bgColor = context.appColors.primary.withValues(alpha: 0.20);
+      textColor = context.appColors.primary;
+    } else {
+      bgColor = context.appColors.secondary.withValues(alpha: 0.20);
+      textColor = context.appColors.secondary;
+    }
+    if (status.isEmpty) {
+      return Container();
+    }
+    return Container(
+      decoration: BoxDecoration(
+        color: bgColor,
+        borderRadius: BorderRadius.circular(15),
+        border: Border.all(color: textColor, width: 1),
+      ),
+
+      padding: EdgeInsets.symmetric(horizontal: 12, vertical: 2),
+      child: Center(child: AppTextBody(text: status, color: textColor, fontSize: fontSize)),
+    );
+  }
+
+  static String dateFormatter (String date) {
+    return date.toString().split(" ")[0];
+  }
 }

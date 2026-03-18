@@ -3,6 +3,7 @@ import 'package:buraq_enterprise_admin/data/screens/project_repository.dart';
 import 'package:buraq_enterprise_admin/utils/app_util.dart';
 import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
+import 'package:go_router/go_router.dart';
 
 class AddProjectScreenController extends GetxController {
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
@@ -34,6 +35,7 @@ class AddProjectScreenController extends GetxController {
     update();
   }
 
+
   Future<void> createProject({required BuildContext context}) async {
     if (!formKey.currentState!.validate()) {
       return;
@@ -48,7 +50,9 @@ class AddProjectScreenController extends GetxController {
         totalBudgetAllocated: int.parse(totalBudgetAllocatedController.text.trim()),
         employeeIds: selectedEmployeeIds
       );
-
+      if (context.mounted) {
+        context.pop();
+      }
        AppUtils.showToast(
         label: AppUtils.getFirebaseErrorMessage(message: "Project Added Sucessfully"),
         vairant: ToastVariants.success,

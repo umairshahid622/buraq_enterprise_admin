@@ -130,7 +130,7 @@ class AddProjectScreenWidget extends StatelessWidget {
       return AppFilledButton(
         isEnable: !controller.isLoading.value,
         isLoading: controller.isLoading.value,        
-        onPressedCallBack: () {
+        onPressedCallBack: () {          
           controller.createProject(context: context);
         },
         buttonText: "Add a Project",
@@ -294,7 +294,7 @@ class AddProjectScreenWidget extends StatelessWidget {
       lastDate: DateTime(2100),
     );
     if (selectedDate != null) {
-      dateController.text = selectedDate.toString().split(" ")[0];
+      dateController.text = AppUtils.dateFormatter(selectedDate.toString());
     }
   }
 }
