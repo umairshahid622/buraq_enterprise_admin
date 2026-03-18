@@ -43,16 +43,19 @@ class LoginController extends GetxController {
         },
         onError: (error) {
           loading.value = false;
+          AppUtils.showToast(
+            label: error,
+            vairant: ToastVariants.error,
+          );
         },
       );
     } catch (e) {
+      loading.value = false;
       String error = AppUtils.getFirebaseErrorMessage(message: e.toString());
       AppUtils.showToast(
         label: error,
         vairant: ToastVariants.error,
       );
-    } finally {
-      loading.value = false;
     }
   }
 

@@ -77,6 +77,10 @@ class AppTextField extends StatelessWidget {
         break;
     }
 
+
+    final FocusNode focus = focusNode ?? FocusNode();
+
+
     return Obx(() {
       final AppColorScheme appColorScheme = context.appColors;
       return Column(
@@ -94,6 +98,7 @@ class AppTextField extends StatelessWidget {
             },
             readOnly: readOnly,
             onTap: onTapCallBack ?? () {},
+            showCursor: !focus.hasFocus,
             textAlign: textAlign ?? TextAlign.start,
             autofocus: autoFocus ?? false,
             maxLength: maxLength,
