@@ -1,9 +1,19 @@
+import 'package:buraq_enterprise_admin/models/project_model.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 class ProjectRepository {
   final FirebaseFirestore _db = FirebaseFirestore.instance;
   final FirebaseAuth _auth = FirebaseAuth.instance;
+
+
+  Stream<List<ProjectModel>> fetchProjects () {
+    return _db.collection("collectionPath").snapshots().map((snapShot){
+      return snapShot.docs.map((doc){
+        return ProjectModel.fromSnapshot(doc);
+      }).toList();
+    });
+  }
 
   Future<void> addProject({
     required String projectName,
@@ -14,39 +24,46 @@ class ProjectRepository {
     required List<String> employeeIds,
   }) async {
     final projectId = await _generateProjectId();
+    final DocumentReference projectRef = _db
+        .collection('projects')
+        .doc(projectId);
 
-    final projectRef = _db.collection('projects').doc(projectId);
-    final WriteBatch batch = _db.batch();
-    batch.set(projectRef, {
-      'projectId': projectId,
-      'employeeIds': employeeIds,
-      'projectName': projectName,
-      'projectDiscription': projectDiscription,
-      'startDate': startDate,
-      'endDate': endDate,
-      'totalBudgetAllocated': totalBudgetAllocated,
-      'status': 'active',
-      'createdBy': _auth.currentUser!.uid,
-      'updatedBy': _auth.currentUser!.uid,
-      'updatedAt': FieldValue.serverTimestamp(),
-      'createdAt': FieldValue.serverTimestamp(),
-    });
-    for (String employeeId in employeeIds) {
-      final memberRef = _db
-          .collection('project_members')
-          .doc('${projectId}_$employeeId');
+    await _db.runTransaction((transaction) async {
+      DocumentSnapshot projectSnap = await transaction.get(projectRef);
 
-      batch.set(memberRef, {
+      if (projectSnap.exists) {       
+        throw Exception("Project '$projectName' already exists!");
+      }
+
+      transaction.set(projectRef, {
         'projectId': projectId,
-        'employeeId': employeeId,
-        'assignedBy': _auth.currentUser!.uid,
-        'updatedBy':_auth.currentUser!.uid,
+        'employeeIds': employeeIds,
+        'projectName': projectName,
+        'projectDiscription': projectDiscription,
+        'startDate': startDate,
+        'endDate': endDate,
+        'totalBudgetAllocated': totalBudgetAllocated,
+        'status': 'active',
+        'createdBy': _auth.currentUser!.uid,
+        'updatedBy': _auth.currentUser!.uid,
         'updatedAt': FieldValue.serverTimestamp(),
-        'assignedAt': FieldValue.serverTimestamp(),
+        'createdAt': FieldValue.serverTimestamp(),
       });
-    }
+      for (String employeeId in employeeIds) {
+        final memberRef = _db
+            .collection('project_members')
+            .doc('${projectId}_$employeeId');
 
-    await batch.commit();
+        transaction.set(memberRef, {
+          'projectId': projectId,
+          'employeeId': employeeId,
+          'assignedBy': _auth.currentUser!.uid,
+          'updatedBy': _auth.currentUser!.uid,
+          'updatedAt': FieldValue.serverTimestamp(),
+          'assignedAt': FieldValue.serverTimestamp(),
+        });
+      }
+    });
   }
 
   Future<String> _generateProjectId() async {

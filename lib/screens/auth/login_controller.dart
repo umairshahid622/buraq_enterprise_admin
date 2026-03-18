@@ -1,6 +1,7 @@
+import 'package:buraq_enterprise_admin/core/constants/app_enum.dart';
 import 'package:buraq_enterprise_admin/data/auth/auth_repository.dart';
 import 'package:buraq_enterprise_admin/screens/controllers/common/user_controller.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:buraq_enterprise_admin/utils/app_util.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -45,6 +46,12 @@ class LoginController extends GetxController {
         },
       );
     } catch (e) {
+      String error = AppUtils.getFirebaseErrorMessage(message: e.toString());
+      AppUtils.showToast(
+        label: error,
+        vairant: ToastVariants.error,
+      );
+    } finally {
       loading.value = false;
     }
   }
@@ -64,20 +71,11 @@ class LoginController extends GetxController {
       final userController = Get.find<UserController>();
       await userController.fetchUserProfile();
     } catch (e) {
-      String error = "";
-      if (e is FirebaseAuthException) {
-        switch (e.code) {
-          case 'invalid-verification-code':
-            error = "Invalid OTP. Please try again.";
-            break;
-          case 'session-expired':
-            error = "OTP session expired. Please request a new OTP.";
-            break;
-          default:
-            error = "Authentication failed. Please try again.";
-        }
-      }
-      print(error);
+      String error = AppUtils.getFirebaseErrorMessage(message: e.toString());
+      AppUtils.showToast(
+        label: error,
+        vairant: ToastVariants.error,
+      );
     } finally {
       otpLoading.value = false;
     }

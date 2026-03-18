@@ -1,5 +1,7 @@
+import 'package:buraq_enterprise_admin/core/constants/app_enum.dart';
 import 'package:buraq_enterprise_admin/data/auth/auth_repository.dart';
 import 'package:buraq_enterprise_admin/models/user_model.dart';
+import 'package:buraq_enterprise_admin/utils/app_util.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:get/get.dart';
 
@@ -64,7 +66,11 @@ class UserController extends GetxController {
       isLoading.value = true;
       await _authRepo.updateUser(firstName: firstName, lastName: lastName);
     } catch (e) {
-      print(e);
+      String error = AppUtils.getFirebaseErrorMessage(message: e.toString());
+      AppUtils.showToast(
+        label: error,
+        vairant: ToastVariants.error,
+      );
     } finally {
       isLoading.value = false;
     }

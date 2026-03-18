@@ -65,4 +65,14 @@ class AddProjectScreenController extends GetxController {
       isLoading.value = false;
     }
   }
+
+  @override
+  void dispose() {
+    super.dispose();
+    projectNameController.dispose();
+    projectDiscriptionController.dispose();
+    startDateController.dispose();
+    endDateController.dispose();
+    totalBudgetAllocatedController.dispose();
+  }
 }

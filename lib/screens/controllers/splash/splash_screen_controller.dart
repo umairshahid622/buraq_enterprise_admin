@@ -28,6 +28,7 @@ class SplashController extends GetxController {
     if (user != null) {
       await _userController.fetchUserProfile();
       await _employeeController.fetchEmployees();
+      
     }
 
     await Future.delayed(const Duration(milliseconds: 1500));

@@ -23,7 +23,7 @@ class AddProjectScreenWidget extends StatelessWidget {
     final Widget spacing = SizedBox(height: screnHeight * 0.02);
     return GetBuilder(
       init: AddProjectScreenController(),
-      dispose: (controller) => controller.dispose(),
+      dispose: (controller) => Get.delete<AddProjectScreenController>(),
       builder: (controller) {
         return AppScrollableBody(
           centerContent: true,
