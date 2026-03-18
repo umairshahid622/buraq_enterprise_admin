@@ -1,13 +1,14 @@
 import 'package:buraq_enterprise_admin/data/screens/project_repository.dart';
 import 'package:buraq_enterprise_admin/models/project_model.dart';
 import 'package:flutter/widgets.dart';
+import 'package:get/get_utils/src/extensions/internacionalization.dart';
 import 'package:get/state_manager.dart';
 
 class ProjectScreenController extends GetxController {
-  final TextEditingController projectController = TextEditingController();
+  final TextEditingController projectSearchController = TextEditingController();
   final ProjectRepository projectRepository = ProjectRepository();
-
   final RxList<ProjectModel> projects = <ProjectModel>[].obs;
+  final RxString searchQuery = ''.obs;
 
   RxBool isLoading = true.obs;
   
@@ -29,9 +30,29 @@ class ProjectScreenController extends GetxController {
     });
   }
 
+
+  void onSearchChanged(String query) {
+    searchQuery.value = query.trim().toLowerCase();
+  }
+
+
+  List<ProjectModel> get filteredProjects {
+    if (searchQuery.value.isEmpty) {
+      return projects;
+    }
+
+    final query = searchQuery.value.toLowerCase();
+
+    return projects.where((project) {
+      return project.projectName.toLowerCase().contains(query) ||
+          project.projectId.toLowerCase().contains(query);
+    }).toList();
+  }
+  
+
   @override
   void onClose() {
-    projectController.dispose();
+    projectSearchController.dispose();
     super.onClose();
   }
 }
