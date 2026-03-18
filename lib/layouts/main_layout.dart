@@ -82,7 +82,6 @@ class MainLayout extends StatelessWidget {
         child: navigationShell,
       ),
       bottomNavigationBar: SizedBox(
-        height: AppConstants.bottomNavigationBarHeight,
         child: BottomNavigationBar(
           elevation: 1,
           backgroundColor: context.appColors.surface,

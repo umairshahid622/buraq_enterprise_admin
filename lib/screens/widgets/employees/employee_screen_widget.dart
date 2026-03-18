@@ -104,7 +104,7 @@ class EmployeeScreenWidget extends StatelessWidget {
                                           SizedBox(height: 10),
                                           Row(
                                             children: [
-                                              expenseCard(
+                                              AppUtils.expenseCard(
                                                 context,
                                                 "Allocated",
                                                 allocatedAmount,
@@ -115,7 +115,7 @@ class EmployeeScreenWidget extends StatelessWidget {
                                                         .commonHorizontalSpacing /
                                                     2,
                                               ),
-                                              expenseCard(
+                                              AppUtils.expenseCard(
                                                 context,
                                                 "Spent",
                                                 spentAmount,
@@ -152,32 +152,7 @@ class EmployeeScreenWidget extends StatelessWidget {
     );
   }
 
-  Expanded expenseCard(
-    BuildContext context,
-    String expenseType,
-    int amount,
-  ) {
-    return Expanded(
-      child: Container(
-        padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-        decoration: BoxDecoration(
-          color: context.appColors.background,
-          borderRadius: BorderRadius.circular(AppConstants.cardBorderRadius),
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            AppTextHeading(
-              text: expenseType,
-              fontSize: 14,
-              color: context.appColors.secondary,
-            ),
-            AppTextBody(text: AppUtils.formatPKR(amount), fontSize: 14),
-          ],
-        ),
-      ),
-    );
-  }
+
 
   Row contactRow(
     BuildContext context,

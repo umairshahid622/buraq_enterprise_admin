@@ -53,11 +53,13 @@ class ProjectScreenWidget extends StatelessWidget {
                                     project.totalBudgetAllocated;
                                 final int remainingBudget =
                                     project.remainingBudget;
+                                final spentBudget = totalBudgetAllocated - remainingBudget;
                                 final String status = project.status;
                                 final String projectId = project.projectId;
                                 final List<String> employeeIds =
                                     project.employeeIds;
-                                final progressValue = (int.parse(totalBudgetAllocated.toString()) / int.parse(remainingBudget.toString()) * 100);
+                                
+                                final progressValue = AppUtils.calculatePercentage(spentBudget, totalBudgetAllocated);
 
 
                                 return AppCardWidget(
@@ -172,10 +174,16 @@ class ProjectScreenWidget extends StatelessWidget {
                                       Row(
                                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                         children: [
-                                          AppTextBody(text: "${AppUtils.formatPKR(totalBudgetAllocated)} spent"),
-                                          AppTextBody(text: "${AppUtils.formatPKR(remainingBudget)} left", color: context.appColors.colorGreen,),
-                                          
-                                          
+                                          AppTextBody(text: "${AppUtils.formatPKR(spentBudget)} spent"),
+                                          AppTextBody(text: "${AppUtils.formatPKR(remainingBudget)} left", color: context.appColors.colorGreen,),                                          
+                                        ],
+                                      ),
+                                      SizedBox(height: screenHeight * 0.02),
+                                      Row(
+                                        children: [
+                                          AppUtils.expenseCard(context, "Total Budget", totalBudgetAllocated),
+                                          SizedBox(width: 10),
+                                          AppUtils.expenseCard(context, "Spent Budget", spentBudget),
                                         ],
                                       )
                                     ],

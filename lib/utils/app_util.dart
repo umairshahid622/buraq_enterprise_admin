@@ -319,7 +319,7 @@ class AppUtils {
     } else if (status == Status.inactive.name) {
       bgColor = context.appColors.error.withValues(alpha: 0.20);
       textColor = context.appColors.error;
-    } else if (status == Status.completed.name){
+    } else if (status == Status.completed.name) {
       bgColor = context.appColors.primary.withValues(alpha: 0.20);
       textColor = context.appColors.primary;
     } else {
@@ -337,11 +337,45 @@ class AppUtils {
       ),
 
       padding: EdgeInsets.symmetric(horizontal: 12, vertical: 2),
-      child: Center(child: AppTextBody(text: status, color: textColor, fontSize: fontSize)),
+      child: Center(
+        child: AppTextBody(text: status, color: textColor, fontSize: fontSize),
+      ),
     );
   }
 
-  static String dateFormatter (String date) {
+  static String dateFormatter(String date) {
     return date.toString().split(" ")[0];
+  }
+
+  static calculatePercentage(int value1, int value2) {
+    return (value1 / value2) * 100;
+  }
+
+  static Expanded expenseCard(
+    BuildContext context,
+    String expenseType,
+    int amount,
+  ) {
+    return Expanded(
+      child: Container(
+        padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+        decoration: BoxDecoration(
+          color: context.appColors.background,
+          borderRadius: BorderRadius.circular(AppConstants.cardBorderRadius),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            AppTextHeading(
+              text: expenseType,
+              fontSize: 14,
+              color: context.appColors.secondary,
+            ),
+            SizedBox(height: 5,),
+            AppTextHeading(text: AppUtils.formatPKR(amount), fontSize: 16),
+          ],
+        ),
+      ),
+    );
   }
 }

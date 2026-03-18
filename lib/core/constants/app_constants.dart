@@ -14,7 +14,7 @@ class AppConstants {
   static final double commonVerticalSpacing = 24;
   static final double commonHorizontalSpacing = 16;
   static final double mainHeadingFontSize = 28;
-  static final double bottomNavigationBarHeight = 75;
+  static final double bottomNavigationBarHeight = 65;
   static final double appBarHight = 65;
   static final double textFieldLabelMargin = 10;
 
