@@ -347,8 +347,12 @@ class AppUtils {
     return date.toString().split(" ")[0];
   }
 
-  static calculatePercentage(int value1, int value2) {
-    return (value1 / value2) * 100;
+  static double calculatePercentage(int value1, int value2) {
+    if (value2 == 0) return 0;
+
+    double percentage = (value1 / value2) * 100;
+
+    return double.parse(percentage.toStringAsFixed(2));
   }
 
   static Expanded expenseCard(
@@ -371,7 +375,7 @@ class AppUtils {
               fontSize: 14,
               color: context.appColors.secondary,
             ),
-            SizedBox(height: 5,),
+            SizedBox(height: 5),
             AppTextHeading(text: AppUtils.formatPKR(amount), fontSize: 16),
           ],
         ),

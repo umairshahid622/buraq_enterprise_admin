@@ -53,49 +53,28 @@ class ProjectScreenWidget extends StatelessWidget {
                                     project.totalBudgetAllocated;
                                 final int remainingBudget =
                                     project.remainingBudget;
-                                final spentBudget = totalBudgetAllocated - remainingBudget;
+                                final spentBudget =
+                                    totalBudgetAllocated - remainingBudget;
                                 final String status = project.status;
                                 final String projectId = project.projectId;
                                 final List<String> employeeIds =
                                     project.employeeIds;
-                                
-                                final progressValue = AppUtils.calculatePercentage(spentBudget, totalBudgetAllocated);
 
+                                final progressValue =
+                                    AppUtils.calculatePercentage(
+                                      spentBudget,
+                                      totalBudgetAllocated,
+                                    );
 
                                 return AppCardWidget(
                                   cardWidget: Column(
                                     crossAxisAlignment:
                                         CrossAxisAlignment.start,
                                     children: [
-                                      Row(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Flexible(
-                                            child: Row(
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.start,
-                                              children: [
-                                                Flexible(
-                                                  child: AppTextHeading(
-                                                    text: projectName,
-                                                  ),
-                                                ),
-                                                SizedBox(width: 10),
-                                                AppUtils.statusContainer(
-                                                  context: context,
-                                                  status: status,
-                                                ),
-                                              ],
-                                            ),
-                                          ),
-                                          SizedBox(width: 10),
-                                          Icon(
-                                            Icons.arrow_forward,
-                                            color: context.appColors.secondary,
-                                            size: 20,
-                                          ),
-                                        ],
+                                      projectCardHeader(
+                                        projectName,
+                                        context,
+                                        status,
                                       ),
                                       AppTextBody(text: projectDiscription),
                                       AppTextBody(
@@ -103,89 +82,63 @@ class ProjectScreenWidget extends StatelessWidget {
                                         fontSize: 14,
                                       ),
                                       SizedBox(height: screenHeight * 0.02),
+                                      projectCardDateAndEmployee(
+                                        context,
+                                        startDate,
+                                        endDate,
+                                        employeeIds,
+                                      ),
+                                      SizedBox(height: screenHeight * 0.02),
                                       Row(
                                         mainAxisAlignment:
                                             MainAxisAlignment.spaceBetween,
                                         children: [
-                                          Text.rich(
-                                            TextSpan(
-                                              children: <InlineSpan>[
-                                                WidgetSpan(
-                                                  child: Icon(
-                                                    Icons
-                                                        .calendar_month_outlined,
-                                                    color: context
-                                                        .appColors
-                                                        .secondary,
-                                                        size: 18,
-                                                  ),
-                                                ),
-                                                WidgetSpan(
-                                                  child: AppTextBody(
-                                                    text:
-                                                        ' $startDate - $endDate',
-                                                        fontSize: 14,
-                                                  ),
-                                                ),
-                                              ],
-                                            ),
-                                          ),
-                                          Text.rich(
-                                            TextSpan(
-                                              children: <InlineSpan>[
-                                                WidgetSpan(
-                                                  child: Icon(
-                                                    Icons
-                                                        .people_sharp,
-                                                    color: context
-                                                        .appColors
-                                                        .secondary,
-                                                        size: 18,
-                                                  ),
-                                                ),
-                                                WidgetSpan(
-                                                  child: AppTextBody(
-                                                    text:
-                                                        ' ${employeeIds.length} Employees',
-                                                        fontSize: 14,
-                                                  ),
-                                                ),
-                                              ],
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-
-                                      SizedBox(height: screenHeight * 0.02,),
-                                      Row(
-                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                        children: [
                                           AppTextBody(text: "Budget Used"),
-                                          AppTextHeading(text: "${progressValue.toString()} %", fontSize: 16,)
+                                          AppTextHeading(
+                                            text:
+                                                "${progressValue.toString()} %",
+                                            fontSize: 16,
+                                          ),
                                         ],
                                       ),
-                                      SizedBox(height: 7,),
+                                      SizedBox(height: 7),
                                       LinearProgressIndicator(
                                         borderRadius: BorderRadius.circular(12),
-                                        value: progressValue / 1000,
-                                        minHeight: 6.5,                                                                                
+                                        value: progressValue / 100,
+                                        minHeight: 6.5,
                                       ),
-                                      SizedBox(height: 7,),
+                                      SizedBox(height: 7),
                                       Row(
-                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
                                         children: [
-                                          AppTextBody(text: "${AppUtils.formatPKR(spentBudget)} spent"),
-                                          AppTextBody(text: "${AppUtils.formatPKR(remainingBudget)} left", color: context.appColors.colorGreen,),                                          
+                                          AppTextBody(
+                                            text:
+                                                "${AppUtils.formatPKR(spentBudget)} spent",
+                                          ),
+                                          AppTextBody(
+                                            text:
+                                                "${AppUtils.formatPKR(remainingBudget)} left",
+                                            color: context.appColors.colorGreen,
+                                          ),
                                         ],
                                       ),
                                       SizedBox(height: screenHeight * 0.02),
                                       Row(
                                         children: [
-                                          AppUtils.expenseCard(context, "Total Budget", totalBudgetAllocated),
+                                          AppUtils.expenseCard(
+                                            context,
+                                            "Total Budget",
+                                            totalBudgetAllocated,
+                                          ),
                                           SizedBox(width: 10),
-                                          AppUtils.expenseCard(context, "Spent Budget", spentBudget),
+                                          AppUtils.expenseCard(
+                                            context,
+                                            "Spent Budget",
+                                            spentBudget,
+                                          ),
                                         ],
-                                      )
+                                      ),
                                     ],
                                   ),
                                 );
@@ -205,6 +158,81 @@ class ProjectScreenWidget extends StatelessWidget {
           ],
         );
       },
+    );
+  }
+
+  Row projectCardDateAndEmployee(
+    BuildContext context,
+    String startDate,
+    String endDate,
+    List<String> employeeIds,
+  ) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Text.rich(
+          TextSpan(
+            children: <InlineSpan>[
+              WidgetSpan(
+                child: Icon(
+                  Icons.calendar_month_outlined,
+                  color: context.appColors.secondary,
+                  size: 18,
+                ),
+              ),
+              WidgetSpan(
+                child: AppTextBody(
+                  text: ' $startDate - $endDate',
+                  fontSize: 14,
+                ),
+              ),
+            ],
+          ),
+        ),
+        Text.rich(
+          TextSpan(
+            children: <InlineSpan>[
+              WidgetSpan(
+                child: Icon(
+                  Icons.people_sharp,
+                  color: context.appColors.secondary,
+                  size: 18,
+                ),
+              ),
+              WidgetSpan(
+                child: AppTextBody(
+                  text: ' ${employeeIds.length} Employees',
+                  fontSize: 14,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+
+  Row projectCardHeader(
+    String projectName,
+    BuildContext context,
+    String status,
+  ) {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Flexible(
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Flexible(child: AppTextHeading(text: projectName)),
+              SizedBox(width: 10),
+              AppUtils.statusContainer(context: context, status: status),
+            ],
+          ),
+        ),
+        SizedBox(width: 10),
+        Icon(Icons.arrow_forward, color: context.appColors.secondary, size: 20),
+      ],
     );
   }
 
