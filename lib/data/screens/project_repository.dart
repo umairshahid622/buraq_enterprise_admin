@@ -1,11 +1,55 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class ProjectRepository {
   final FirebaseFirestore _db = FirebaseFirestore.instance;
+  final FirebaseAuth _auth = FirebaseAuth.instance;
 
-  Future<void> addProject() async {}
+  Future<void> addProject({
+    required String projectName,
+    required String projectDiscription,
+    required DateTime startDate,
+    required DateTime endDate,
+    required int totalBudgetAllocated,
+    required List<String> employeeIds,
+  }) async {
+    final projectId = await _generateProjectId();
 
-  Future<String> generateProjectId() async {
+    final projectRef = _db.collection('projects').doc(projectId);
+    final WriteBatch batch = _db.batch();
+    batch.set(projectRef, {
+      'projectId': projectId,
+      'employeeIds': employeeIds,
+      'projectName': projectName,
+      'projectDiscription': projectDiscription,
+      'startDate': startDate,
+      'endDate': endDate,
+      'totalBudgetAllocated': totalBudgetAllocated,
+      'status': 'active',
+      'createdBy': _auth.currentUser!.uid,
+      'updatedBy': _auth.currentUser!.uid,
+      'updatedAt': FieldValue.serverTimestamp(),
+      'createdAt': FieldValue.serverTimestamp(),
+    });
+    for (String employeeId in employeeIds) {
+      final memberRef = _db
+          .collection('project_members')
+          .doc('${projectId}_$employeeId');
+
+      batch.set(memberRef, {
+        'projectId': projectId,
+        'employeeId': employeeId,
+        'assignedBy': _auth.currentUser!.uid,
+        'updatedBy':_auth.currentUser!.uid,
+        'updatedAt': FieldValue.serverTimestamp(),
+        'assignedAt': FieldValue.serverTimestamp(),
+      });
+    }
+
+    await batch.commit();
+  }
+
+  Future<String> _generateProjectId() async {
     final counterRef = _db.collection('counters').doc('projects');
 
     return await _db.runTransaction((transaction) async {

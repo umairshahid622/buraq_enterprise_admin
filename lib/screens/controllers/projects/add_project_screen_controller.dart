@@ -1,3 +1,6 @@
+import 'package:buraq_enterprise_admin/core/constants/app_enum.dart';
+import 'package:buraq_enterprise_admin/data/screens/project_repository.dart';
+import 'package:buraq_enterprise_admin/utils/app_util.dart';
 import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 
@@ -9,12 +12,14 @@ class AddProjectScreenController extends GetxController {
       TextEditingController();
   final TextEditingController startDateController = TextEditingController();
   final TextEditingController endDateController = TextEditingController();
-  final TextEditingController totalBudgetAllocatedController = TextEditingController();
+  final TextEditingController totalBudgetAllocatedController =
+      TextEditingController();
+
+  final ProjectRepository _projectRepository = ProjectRepository();
+
   final isLoading = false.obs;
 
-
   final List<String> selectedEmployeeIds = [];
-
 
   bool isEmployeeSelected(String empId) {
     return selectedEmployeeIds.contains(empId);
@@ -29,12 +34,35 @@ class AddProjectScreenController extends GetxController {
     update();
   }
 
-  void createProject({required BuildContext context}) {
-    if (formKey.currentState!.validate()) {    
+  Future<void> createProject({required BuildContext context}) async {
+    if (!formKey.currentState!.validate()) {
       return;
     }
+    isLoading.value = true;
+    try {     
+      await _projectRepository.addProject(
+        projectName: projectNameController.text.trim(),
+        projectDiscription: projectDiscriptionController.text.trim(),
+        startDate: DateTime.parse(startDateController.text.trim()),
+        endDate: DateTime.parse(endDateController.text.trim()),        
+        totalBudgetAllocated: int.parse(totalBudgetAllocatedController.text.trim()),
+        employeeIds: selectedEmployeeIds
+      );
 
-    
+       AppUtils.showToast(
+        label: AppUtils.getFirebaseErrorMessage(message: "Project Added Sucessfully"),
+        vairant: ToastVariants.success,
+      );
+    } catch (e) {
+      print(e.toString());
 
+      
+      AppUtils.showToast(
+        label: AppUtils.getFirebaseErrorMessage(message: e.toString()),
+        vairant: ToastVariants.error,
+      );
+    } finally {
+      isLoading.value = false;
+    }
   }
 }
