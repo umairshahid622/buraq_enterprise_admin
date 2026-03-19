@@ -358,9 +358,9 @@ class AppUtils {
   static Expanded expenseCard(
     BuildContext context,
     String expenseType,
-    int amount,
-    {bool showCurrency = true}
-  ) {
+    int amount, {
+    bool showCurrency = true,
+  }) {
     return Expanded(
       child: Container(
         padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
@@ -377,11 +377,31 @@ class AppUtils {
               color: context.appColors.secondary,
             ),
             SizedBox(height: 5),
-            
-            AppTextHeading(text: showCurrency ? AppUtils.formatPKR(amount): amount.toString(), fontSize: 16),
+
+            AppTextHeading(
+              text: showCurrency
+                  ? AppUtils.formatPKR(amount)
+                  : amount.toString(),
+              fontSize: 16,
+            ),
           ],
         ),
       ),
+    );
+  }
+
+  static Widget noDataFound({required BuildContext context, required String heading, required String subHeading}) {
+    return Column(
+      children: [
+        Icon(
+          Icons.warning_amber_rounded,
+          color: context.appColors.primary,
+          size: 80,
+        ),
+        AppTextHeading(text: heading, textAlign: TextAlign.center,fontSize: 18),
+        SizedBox(height: 2),
+        AppTextBody(text: subHeading),
+      ],
     );
   }
 }

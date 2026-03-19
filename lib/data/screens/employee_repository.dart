@@ -21,16 +21,24 @@ class EmployeeRepository {
     final existingUser = await _db
         .collection('users')
         .where('phone', isEqualTo: formattedPhone)
-        .get();
-
+        .get();    
     if (existingUser.docs.isNotEmpty) {
-      throw Exception("Phone number already exists");
+      final userData = existingUser.docs.first.data();
+      final role = userData['role'];
+
+      if (role == Roles.admin.name) {
+        throw Exception(
+          "This phone number is registered to an Admin account and cannot be used for an employee.",
+        );
+      } else {
+        throw Exception("An employee with this phone number already exists.");
+      }
     }
 
     final empId = await _generateEmployeeId(phoneNumber: phoneNumber);
 
     WriteBatch batch = _db.batch();
-    DocumentReference userRef = _db.collection('users').doc(empId);    
+    DocumentReference userRef = _db.collection('users').doc(empId);
 
     batch.set(userRef, {
       'empId': empId,
@@ -57,27 +65,26 @@ class EmployeeRepository {
     batch.commit();
   }
 
-
   Stream<List<Employee>> fetchEmployees() {
     return _db
         .collection('users')
         .where('role', isEqualTo: Roles.employee.name)
         .snapshots()
         .map((snapShot) {
-      return snapShot.docs.map((doc) {
-        return Employee.fromSnapshot(doc);
-      }).toList();
-    });
+          return snapShot.docs.map((doc) {
+            return Employee.fromSnapshot(doc);
+          }).toList();
+        });
   }
 
-  // Future<List<Employee>> fetchEmployees() async {
-  //   final snapshot = await _db
-  //       .collection('users')
-  //       .where('role', isEqualTo: 'employee')
-  //       .get();
-
-  //   return snapshot.docs.map((doc) => Employee.fromFirestore(doc)).toList();
-  // }
+  Stream<int> activeProjectsCountStream(String employeeId) {
+    return _db
+        .collection('projects')
+        .where('employeeIds', arrayContains: employeeId)
+        .where('status', isEqualTo: Status.active.name)
+        .snapshots()
+        .map((snapshot) => snapshot.docs.length);
+  }
 
   Future allocateAmountHistory({
     required String allocateBy,
@@ -102,7 +109,6 @@ class EmployeeRepository {
   }
 
   Future<String> _generateEmployeeId({required String phoneNumber}) async {
-
     final counterRef = _db.collection('counters').doc('employees');
     final usersRef = _db.collection('users');
 

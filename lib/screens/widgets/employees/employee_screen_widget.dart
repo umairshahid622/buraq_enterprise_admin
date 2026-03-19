@@ -4,6 +4,7 @@ import 'package:buraq_enterprise_admin/core/constants/app_enum.dart';
 import 'package:buraq_enterprise_admin/screens/controllers/employees/employee_controller.dart';
 import 'package:buraq_enterprise_admin/utils/app_util.dart';
 import 'package:buraq_enterprise_admin/utils/widgets/app_scroll_body.dart';
+import 'package:buraq_enterprise_admin/utils/widgets/app_spiner.dart';
 import 'package:buraq_enterprise_admin/utils/widgets/app_text.dart';
 import 'package:buraq_enterprise_admin/utils/widgets/app_text_field.dart';
 import 'package:buraq_enterprise_admin/utils/widgets/buttons/app_filled_button.dart';
@@ -33,16 +34,15 @@ class EmployeeScreenWidget extends StatelessWidget {
                     children: [
                       Obx(() {
                         if (controller.isLoading.value) {
-                          return const Center(
-                            child: Padding(
-                              padding: EdgeInsets.all(20.0),
-                              child: CircularProgressIndicator(),
-                            ),
-                          );
+                          return AppSpiner();
                         }
                         if (controller.employees.isEmpty &&
                             !controller.isLoading.value) {
-                          return AppTextHeading(text: "No Employees Found");
+                          return AppUtils.noDataFound(
+                            context: context,
+                            heading: "No Employees Found",
+                            subHeading: "Add Employees to get started",
+                          );
                         }
                         return Column(
                           children: [
@@ -53,7 +53,13 @@ class EmployeeScreenWidget extends StatelessWidget {
                             SizedBox(
                               height: AppConstants.commonVerticalSpacing,
                             ),
-                              controller.filteredEmployees.isEmpty ? AppTextHeading(text: "No employees found based on your search", fontSize: 16,) : SizedBox.shrink(),
+                            controller.filteredEmployees.isEmpty
+                                ? AppTextHeading(
+                                    text:
+                                        "No employees found based on your search",
+                                    fontSize: 16,
+                                  )
+                                : SizedBox.shrink(),
 
                             ListView.separated(
                               itemCount: controller.filteredEmployees.length,
@@ -125,11 +131,30 @@ class EmployeeScreenWidget extends StatelessWidget {
                                                 14,
                                                 Icons.phone,
                                               ),
-                                              contactRow(
-                                                context,
-                                                employeePhone,
-                                                14,
-                                                Icons.business_center_outlined,
+                                              StreamBuilder<int>(
+                                                stream: controller
+                                                    .getActiveProjectsCountStream(
+                                                      employeeId,
+                                                    ),
+                                                builder: (context, snapshot) {
+                                                  String projectsText =
+                                                      "Loading...";
+                                                  if (snapshot.hasData) {
+                                                    projectsText =
+                                                        "${snapshot.data} Active Projects";
+                                                  } else if (snapshot
+                                                      .hasError) {
+                                                    projectsText = "Error";
+                                                  }
+
+                                                  return contactRow(
+                                                    context,
+                                                    projectsText,
+                                                    14,
+                                                    Icons
+                                                        .business_center_outlined,
+                                                  );
+                                                },
                                               ),
                                               SizedBox(height: 10),
                                               Row(

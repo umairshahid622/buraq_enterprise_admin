@@ -1,3 +1,4 @@
+import 'package:buraq_enterprise_admin/utils/widgets/app_scroll_body.dart';
 import 'package:flutter/material.dart';
 
 class HomeScreenWidget extends StatelessWidget {
@@ -5,6 +6,8 @@ class HomeScreenWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Placeholder();
+    return AppScrollableBody(child: Column(children: [
+      
+    ]));
   }
 }

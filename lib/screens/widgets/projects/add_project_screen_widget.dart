@@ -25,6 +25,13 @@ class AddProjectScreenWidget extends StatelessWidget {
       init: AddProjectScreenController(),
       dispose: (controller) => Get.delete<AddProjectScreenController>(),
       builder: (controller) {
+        if (employeeController.employees.isEmpty) {
+          
+          return AppScrollableBody(
+            centerContent: true,
+            child: AppUtils.noDataFound(context: context, heading: "No Employee found to allocate the project", subHeading: "Add a Employee to get started"),
+          );
+        }
         return AppScrollableBody(
           centerContent: true,
           child: Form(
@@ -129,8 +136,8 @@ class AddProjectScreenWidget extends StatelessWidget {
     return Obx(() {
       return AppFilledButton(
         isEnable: !controller.isLoading.value,
-        isLoading: controller.isLoading.value,        
-        onPressedCallBack: () {          
+        isLoading: controller.isLoading.value,
+        onPressedCallBack: () {
           controller.createProject(context: context);
         },
         buttonText: "Add a Project",

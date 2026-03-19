@@ -35,17 +35,11 @@ class ProjectScreenWidget extends StatelessWidget {
                     children: [
                       Obx(() {
                         if (controller.isLoading.value) {
-                          return Padding(
-                            padding: EdgeInsets.all(20.0),
-                            child: AppSpiner(),
-                          );
+                          return AppSpiner();
                         }
 
-                        if (controller.filteredProjects.isEmpty) {
-                          return AppTextHeading(
-                            text: "No projects found",
-                            fontSize: 16,
-                          );
+                        if (controller.projects.isEmpty) {
+                          return AppUtils.noDataFound(context: context, heading: "No projects found", subHeading: "Add a project to get started");        
                         }
 
                         return Column(
@@ -225,9 +219,15 @@ class ProjectScreenWidget extends StatelessWidget {
           child: AppCardWidget(
             cardWidget: Column(
               children: [
-                AppTextHeading(text: activeProjectsLength.toString(), fontSize: headingFontSize,),
+                AppTextHeading(
+                  text: activeProjectsLength.toString(),
+                  fontSize: headingFontSize,
+                ),
                 SizedBox(height: 10),
-                AppTextBody(text: Status.active.name.capitalize!, color: context.appColors.secondary),
+                AppTextBody(
+                  text: Status.active.name.capitalize!,
+                  color: context.appColors.secondary,
+                ),
               ],
             ),
           ),
@@ -239,13 +239,10 @@ class ProjectScreenWidget extends StatelessWidget {
               children: [
                 AppTextHeading(
                   text: AppUtils.formatPKR(totalBudget),
-                  fontSize: headingFontSize,         
+                  fontSize: headingFontSize,
                 ),
                 SizedBox(height: 10),
-                AppTextBody(
-                  text: "Budget",
-                  color: context.appColors.secondary,
-                ),
+                AppTextBody(text: "Budget", color: context.appColors.secondary),
               ],
             ),
           ),
@@ -255,12 +252,12 @@ class ProjectScreenWidget extends StatelessWidget {
           child: AppCardWidget(
             cardWidget: Column(
               children: [
-                AppTextHeading(text: AppUtils.formatPKR(spentBudget),fontSize: headingFontSize,),
-                SizedBox(height: 10),
-                AppTextBody(
-                  text: "Spent",
-                  color: context.appColors.secondary,
+                AppTextHeading(
+                  text: AppUtils.formatPKR(spentBudget),
+                  fontSize: headingFontSize,
                 ),
+                SizedBox(height: 10),
+                AppTextBody(text: "Spent", color: context.appColors.secondary),
               ],
             ),
           ),

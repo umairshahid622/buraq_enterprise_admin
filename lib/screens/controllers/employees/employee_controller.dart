@@ -10,6 +10,9 @@ class EmployeeController extends GetxController {
 
 
   final EmployeeRepository _employeeRepository = EmployeeRepository();
+  Stream<int> getActiveProjectsCountStream(String employeeId) {
+    return _employeeRepository.activeProjectsCountStream(employeeId);
+  }
 
 
   final TextEditingController searchController = TextEditingController();

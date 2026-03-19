@@ -8,11 +8,13 @@ class AppTextHeading extends StatelessWidget {
   final double? fontSize;
   final Color? color;
   final FontWeight? fontWeight;
+  final TextAlign? textAlign;
   const AppTextHeading({
     super.key,
     required this.text,
     this.fontSize = 24.0,
-    this.fontWeight = FontWeight.bold,
+    this.fontWeight = FontWeight.bold,    
+    this.textAlign,
     this.color,
   });
 
@@ -22,6 +24,7 @@ class AppTextHeading extends StatelessWidget {
       final colors = context.appColors;
       return Text(
         text,
+        textAlign: textAlign,
         style: GoogleFonts.quicksand(
           fontSize: fontSize,
           height: 1,
