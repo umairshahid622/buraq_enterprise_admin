@@ -8,6 +8,7 @@ class Employee {
   String lastName;
   String phone;
   int allocatedAmount;
+  int totalProjects;
   int remaining;
   String status;
   String role;
@@ -22,6 +23,7 @@ class Employee {
     required this.lastName,
     required this.phone,
     required this.allocatedAmount,
+    required this.totalProjects,
     required this.remaining,
     required this.status,
     required this.role,
@@ -40,6 +42,7 @@ class Employee {
       status: data['status'] ?? '',
       role: data['role'] ?? '',
       allocatedAmount: data['allocatedAmount'] ?? 0,
+      totalProjects: data['totalProjects'] ?? 0,
       remaining: data['remaining'] ?? 0,
       createdBy: data['createdBy'] ?? '',
       updatedBy: data['updatedBy'] ?? '',

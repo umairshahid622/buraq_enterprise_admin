@@ -12,13 +12,14 @@ class AppTextField extends StatelessWidget {
   final TextFieldType type;
   final TextEditingController controller;
   final bool? autoFocus;
-  final String? labelText;
   final bool? obscureText;
   final bool readOnly;
+  final bool enabled;
   final Icon? prefixIcon;
   final Widget? suffixIcon;
   final double? paddingHorizontal;
   final double? paddingVertical;
+  final String? labelText;
   final String? hintText;
   final TextAlign? textAlign;
   final double? borderRadius;
@@ -35,7 +36,7 @@ class AppTextField extends StatelessWidget {
     required this.controller,
     this.labelText,
     this.hintText,
-
+    this.enabled = true,
     this.obscureText,
     this.readOnly = false,
     this.prefixIcon,
@@ -98,6 +99,7 @@ class AppTextField extends StatelessWidget {
             },
             readOnly: readOnly,
             onTap: onTapCallBack ?? () {},
+            enabled: enabled,
             showCursor: !focus.hasFocus,
             textAlign: textAlign ?? TextAlign.start,
             autofocus: autoFocus ?? false,

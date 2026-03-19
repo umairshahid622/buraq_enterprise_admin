@@ -275,6 +275,7 @@ class EmployeeScreenWidget extends StatelessWidget {
       children: [
         Expanded(
           child: AppTextField(
+            enabled: !controller.isLoading.value,
             controller: controller.searchController,
             hintText: "Search employee...",
             prefixIcon: const Icon(Icons.search),

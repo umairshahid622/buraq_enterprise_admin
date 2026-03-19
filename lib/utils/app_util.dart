@@ -196,8 +196,8 @@ class AppUtils {
   }
 
   static String formatPKR(num amount) {
-    final formatter = NumberFormat('#,##0', 'en_IN');
-    return "Rs ${formatter.format(amount)}";
+    final formatter = NumberFormat.compact(locale: 'en_IN');
+    return "Rs. ${formatter.format(amount)}";
   }
 
   static String? phoneNumberValidator({required String value}) {
@@ -359,6 +359,7 @@ class AppUtils {
     BuildContext context,
     String expenseType,
     int amount,
+    {bool showCurrency = true}
   ) {
     return Expanded(
       child: Container(
@@ -376,7 +377,8 @@ class AppUtils {
               color: context.appColors.secondary,
             ),
             SizedBox(height: 5),
-            AppTextHeading(text: AppUtils.formatPKR(amount), fontSize: 16),
+            
+            AppTextHeading(text: showCurrency ? AppUtils.formatPKR(amount): amount.toString(), fontSize: 16),
           ],
         ),
       ),

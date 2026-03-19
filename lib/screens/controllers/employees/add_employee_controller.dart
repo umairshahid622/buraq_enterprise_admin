@@ -1,6 +1,5 @@
 import 'package:buraq_enterprise_admin/core/constants/app_enum.dart';
 import 'package:buraq_enterprise_admin/data/screens/employee_repository.dart';
-import 'package:buraq_enterprise_admin/screens/controllers/employees/employee_controller.dart';
 import 'package:buraq_enterprise_admin/utils/app_util.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -46,7 +45,6 @@ class AddEmployeeController extends GetxController {
         vairant: ToastVariants.success,
       );
     } catch (e) {
-      print("Add Employeee ERROR: $e");
       AppUtils.showToast(
         label: AppUtils.getFirebaseErrorMessage(message: e.toString()),
         vairant: ToastVariants.error,

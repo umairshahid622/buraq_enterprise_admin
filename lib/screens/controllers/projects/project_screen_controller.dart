@@ -1,7 +1,6 @@
 import 'package:buraq_enterprise_admin/data/screens/project_repository.dart';
 import 'package:buraq_enterprise_admin/models/project_model.dart';
 import 'package:flutter/widgets.dart';
-import 'package:get/get_utils/src/extensions/internacionalization.dart';
 import 'package:get/state_manager.dart';
 
 class ProjectScreenController extends GetxController {
@@ -12,11 +11,6 @@ class ProjectScreenController extends GetxController {
 
   RxBool isLoading = true.obs;
   
-
-  @override
-  void onInit() {
-    super.onInit();
-  }
 
   @override
   void onReady() {
