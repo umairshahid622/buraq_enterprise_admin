@@ -28,17 +28,17 @@ class ProjectScreenWidget extends StatelessWidget {
             projectHeader(controller, context),
             Expanded(
               child: AppScrollableBody(
-                centerContent: controller.projects.isEmpty,
+                centerContent: controller.splashController.projects.isEmpty,
                 child: Padding(
                   padding: EdgeInsets.symmetric(vertical: screenHeight * 0.05),
                   child: Column(
                     children: [
                       Obx(() {
-                        if (controller.isLoading.value) {
+                        if (controller.splashController.isProjectsLoading.value) {
                           return AppSpiner();
                         }
 
-                        if (controller.projects.isEmpty) {
+                        if (controller.splashController.projects.isEmpty) {
                           return AppUtils.noDataFound(context: context, heading: "No projects found", subHeading: "Add a project to get started");        
                         }
 
@@ -194,15 +194,15 @@ class ProjectScreenWidget extends StatelessWidget {
     required BuildContext context,
     required ProjectScreenController controller,
   }) {
-    final activeProjectsLength = controller.projects
+    final activeProjectsLength = controller.splashController.projects
         .where((e) => e.status == Status.active.name)
         .length;
-    final totalBudget = controller.projects.fold<int>(
+    final totalBudget = controller.splashController.projects.fold<int>(
       0,
       (previousValue, element) => previousValue + element.totalBudgetAllocated,
     );
 
-    final remainingBudget = controller.projects.fold<int>(
+    final remainingBudget = controller.splashController.projects.fold<int>(
       0,
       (previousValue, element) => previousValue + element.remainingBudget,
     );
@@ -344,7 +344,7 @@ class ProjectScreenWidget extends StatelessWidget {
       children: [
         Expanded(
           child: AppTextField(
-            enabled: !controller.isLoading.value,
+            enabled: !controller.splashController.isProjectsLoading.value,
             controller: controller.projectSearchController,
             hintText: "Search project...",
             onTextChangeCallBack: (value) {

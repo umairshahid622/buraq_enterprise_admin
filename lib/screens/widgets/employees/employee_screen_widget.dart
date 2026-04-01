@@ -23,23 +23,22 @@ class EmployeeScreenWidget extends StatelessWidget {
     return GetBuilder<EmployeeController>(
       init: EmployeeController(),
       builder: (controller) {
-        final splashController = Get.find<SplashController>();
         return Column(
           children: [
-            employeeHeader(context, controller, splashController),
+            employeeHeader(context, controller, controller.splashController),
             Expanded(
               child: AppScrollableBody(
-                centerContent: splashController.employees.isEmpty,
+                centerContent: controller.splashController.employees.isEmpty,
                 child: Padding(
                   padding: EdgeInsets.only(top: screnHeight * 0.05),
                   child: Column(
                     children: [
                       Obx(() {
-                        if (splashController.isEmployeesLoading.value) {
+                        if (controller.splashController.isEmployeesLoading.value) {
                           return AppSpiner();
                         }
-                        if (splashController.employees.isEmpty &&
-                            !splashController.isEmployeesLoading.value) {
+                        if (controller.splashController.employees.isEmpty &&
+                            !controller.splashController.isEmployeesLoading.value) {
                           return AppUtils.noDataFound(
                             context: context,
                             heading: "No Employees Found",
@@ -51,7 +50,7 @@ class EmployeeScreenWidget extends StatelessWidget {
                             statusCards(
                               context: context,
                               employeeController: controller,
-                              splashController: splashController,
+                              splashController: controller.splashController,
                             ),
                             SizedBox(
                               height: AppConstants.commonVerticalSpacing,
@@ -135,7 +134,7 @@ class EmployeeScreenWidget extends StatelessWidget {
                                                 Icons.phone,
                                               ),
                                               StreamBuilder<int>(
-                                                stream: splashController
+                                                stream: controller.splashController
                                                     .getActiveProjectsCountStream(
                                                       employeeId,
                                                     ),

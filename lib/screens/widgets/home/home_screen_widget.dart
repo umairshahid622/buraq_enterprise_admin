@@ -1,7 +1,7 @@
 import 'package:buraq_enterprise_admin/core/config/extensions/app_colors_extension.dart';
 import 'package:buraq_enterprise_admin/core/constants/app_constants.dart';
 import 'package:buraq_enterprise_admin/screens/controllers/home/home_screen_controller.dart';
-import 'package:buraq_enterprise_admin/screens/controllers/splash/splash_screen_controller.dart';
+import 'package:buraq_enterprise_admin/utils/app_util.dart';
 import 'package:buraq_enterprise_admin/utils/widgets/app_card_widget.dart';
 import 'package:buraq_enterprise_admin/utils/widgets/app_scroll_body.dart';
 import 'package:buraq_enterprise_admin/utils/widgets/app_text.dart';
@@ -16,7 +16,7 @@ class HomeScreenWidget extends StatelessWidget {
     return GetBuilder(
       init: HomeScreenController(),
       builder: (controller) {
-        final splashController = Get.find<SplashController>();
+        final splashController = controller.splashController;
         return AppScrollableBody(
           child: Column(
             children: [
@@ -102,7 +102,7 @@ class HomeScreenWidget extends StatelessWidget {
                             ),
                           ),
                           SizedBox(height: 15),
-                          AppTextHeading(text: "25"),
+                          AppTextHeading(text: AppUtils.formatPKR(controller.totalBudget)),
                           SizedBox(height: 15),
                           AppTextBody(text: "Total Budget"),
                         ],
@@ -133,7 +133,7 @@ class HomeScreenWidget extends StatelessWidget {
                             ),
                           ),
                           SizedBox(height: 15),
-                          AppTextHeading(text: "25"),
+                          AppTextHeading(text: AppUtils.formatPKR(controller.totalSpent)),
                           SizedBox(height: 15),
                           AppTextBody(text: "Total Spent"),
                         ],

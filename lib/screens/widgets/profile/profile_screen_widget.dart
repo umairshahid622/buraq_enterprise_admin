@@ -46,7 +46,7 @@ class ProfileScreenWidget extends StatelessWidget {
               },
               child: AppCardWidget(cardWidget: getChangeNameCard(context))),
             SizedBox(height: spacing),
-            _logoutButton(profileWidgetController),
+            _logoutButton(profileWidgetController, userController),
           ],
         );
       }),
@@ -113,13 +113,13 @@ class ProfileScreenWidget extends StatelessWidget {
     );
   }
 
-  Widget _logoutButton(ProfileWidgetController profileWidgetController) {
+  Widget _logoutButton(ProfileWidgetController profileWidgetController, UserController userController) {
     return Obx(() {
       return AppFilledButton(
         isLoading: profileWidgetController.isLoading.value,
         isEnable: !profileWidgetController.isLoading.value,
         onPressedCallBack: () {
-          profileWidgetController.logout();
+          print("object: ${userController.user}");
         },
         buttonText: "Logout",
       );
