@@ -35,7 +35,7 @@ class AddEmployeeController extends GetxController {
         firstName: firstNameController.text.trim(),
         lastName: lastNameController.text.trim(),
         phoneNumber: phoneNumberController.text.trim(),
-        amount: int.parse(allocateAmountController.text.trim()),
+        // amount: int.parse(allocateAmountController.text.trim()),
       );
       if (context.mounted) {
         context.pop();

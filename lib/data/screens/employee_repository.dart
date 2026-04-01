@@ -12,7 +12,6 @@ class EmployeeRepository {
     required String firstName,
     required String lastName,
     required String phoneNumber,
-    required int amount,
   }) async {
     String formattedPhone = AppUtils.getFormattedPhoneNumber(
       phoneNumber: phoneNumber,
@@ -47,8 +46,8 @@ class EmployeeRepository {
       'first_name': firstName,
       'last_name': lastName,
       'phone': formattedPhone,
-      'allocatedAmount': amount,
-      'remaining': amount,
+      'allocatedAmount': 0,
+      'remaining': 0,
       'status': Status.active.name,
       'role': Roles.employee.name,
       'createdAt': FieldValue.serverTimestamp(),
@@ -58,7 +57,7 @@ class EmployeeRepository {
     allocateAmountHistory(
       allocateBy: _auth.currentUser!.uid,
       employeeId: empId,
-      amount: amount,
+      amount: 0,
       batch: batch,
     );
 
