@@ -1,8 +1,8 @@
 import 'package:buraq_enterprise_admin/core/config/extensions/app_colors_extension.dart';
 import 'package:buraq_enterprise_admin/core/constants/app_constants.dart';
 import 'package:buraq_enterprise_admin/core/constants/app_enum.dart';
-import 'package:buraq_enterprise_admin/screens/controllers/employees/employee_controller.dart';
 import 'package:buraq_enterprise_admin/screens/controllers/projects/add_project_screen_controller.dart';
+import 'package:buraq_enterprise_admin/screens/controllers/splash/splash_screen_controller.dart';
 import 'package:buraq_enterprise_admin/utils/app_util.dart';
 import 'package:buraq_enterprise_admin/utils/widgets/app_scroll_body.dart';
 import 'package:buraq_enterprise_admin/utils/widgets/app_text.dart';
@@ -17,15 +17,14 @@ class AddProjectScreenWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final EmployeeController employeeController =
-        Get.find<EmployeeController>();
     final double screnHeight = MediaQuery.of(context).size.height;
     final Widget spacing = SizedBox(height: screnHeight * 0.02);
     return GetBuilder(
       init: AddProjectScreenController(),
       dispose: (controller) => Get.delete<AddProjectScreenController>(),
       builder: (controller) {
-        if (employeeController.employees.isEmpty) {
+        final splashController = Get.find<SplashController>();
+        if (splashController.employees.isEmpty) {
           
           return AppScrollableBody(
             centerContent: true,
@@ -117,7 +116,7 @@ class AddProjectScreenWidget extends StatelessWidget {
                 _multiSelectEmployeesDropdown(
                   context: context,
                   controller: controller,
-                  employeeController: employeeController,
+                  splashController: splashController,
                 ),
                 spacing,
                 addProjectBtn(controller, context),
@@ -148,9 +147,9 @@ class AddProjectScreenWidget extends StatelessWidget {
   Widget _multiSelectEmployeesDropdown({
     required BuildContext context,
     required AddProjectScreenController controller,
-    required EmployeeController employeeController,
+    required SplashController splashController,
   }) {
-    final selectedEmployees = employeeController.employees
+    final selectedEmployees = splashController.employees
         .where((e) => controller.selectedEmployeeIds.contains(e.empId))
         .toList();
     final selectedNames = selectedEmployees
@@ -180,7 +179,7 @@ class AddProjectScreenWidget extends StatelessWidget {
                   text: displayText,
                   color: context.appColors.secondary,
                 ),
-                items: employeeController.employees.isEmpty
+                items: splashController.employees.isEmpty
                     ? [
                         DropdownItem<String>(
                           value: '',
@@ -191,7 +190,7 @@ class AddProjectScreenWidget extends StatelessWidget {
                           ),
                         ),
                       ]
-                    : employeeController.employees.map((employee) {
+                    : splashController.employees.map((employee) {
                         return DropdownItem<String>(
                           value: employee.empId,
                           enabled: false,
@@ -236,7 +235,7 @@ class AddProjectScreenWidget extends StatelessWidget {
                       }).toList(),
                 onChanged: (_) {},
                 selectedItemBuilder: (context) {
-                  return employeeController.employees.map((_) {
+                  return splashController.employees.map((_) {
                     return AppTextBody(text: displayText);
                   }).toList();
                 },

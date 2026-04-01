@@ -1,6 +1,6 @@
 
-import 'package:buraq_enterprise_admin/data/screens/employee_repository.dart';
 import 'package:buraq_enterprise_admin/models/employee_model.dart';
+import 'package:buraq_enterprise_admin/screens/controllers/splash/splash_screen_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -8,43 +8,27 @@ class EmployeeController extends GetxController {
 
   EmployeeController();
 
-
-  final EmployeeRepository _employeeRepository = EmployeeRepository();
-  Stream<int> getActiveProjectsCountStream(String employeeId) {
-    return _employeeRepository.activeProjectsCountStream(employeeId);
-  }
-
+  
 
   final TextEditingController searchController = TextEditingController();
 
   final RxString searchQuery = ''.obs;
 
-  final RxList<Employee> employees = <Employee>[].obs;
-
-  final RxBool isLoading = true.obs;
 
   final RxString errorMessage = ''.obs;
 
+  late final SplashController splashController;
 
   @override
   void onInit() {
     super.onInit();
+    splashController = Get.find<SplashController>();
     searchController.addListener(_onSearchChanged);
-
   }
 
   @override
   void onReady() {   
     super.onReady();
-    employees.bindStream(_employeeRepository.fetchEmployees());
-
-    ever(employees, (_) {
-      if (isLoading.value) {
-        isLoading.value = false;
-      }
-      update();
-    });
-
   }
 
   @override
@@ -70,12 +54,17 @@ class EmployeeController extends GetxController {
   // ---------------------------
   List<Employee> get filteredEmployees {
     if (searchQuery.value.isEmpty) {
-      return employees;
+      // return employees;
+      return splashController.employees;
     }
 
     final query = searchQuery.value.toLowerCase();
 
-    return employees.where((e) {
+    // return employees.where((e) {
+    //   return e.firstName.toLowerCase().contains(query) ||
+    //       e.empId.toLowerCase().contains(query);
+    // }).toList();
+    return splashController.employees.where((e) {
       return e.firstName.toLowerCase().contains(query) ||
           e.empId.toLowerCase().contains(query);
     }).toList();

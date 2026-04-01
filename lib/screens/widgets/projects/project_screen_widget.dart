@@ -84,9 +84,7 @@ class ProjectScreenWidget extends StatelessWidget {
                                     project.remainingBudget;
                                 final spentBudget =
                                     totalBudget - remainingBudget;
-                                final int daysRemaining = project.endDate
-                                    .difference(DateTime.now())
-                                    .inDays;
+                                final int daysRemaining = AppUtils.calculateDaysRemaining(project.endDate);
 
                                 final double progressValue =
                                     AppUtils.calculatePercentage(

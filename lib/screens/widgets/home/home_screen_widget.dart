@@ -1,11 +1,12 @@
 import 'package:buraq_enterprise_admin/core/config/extensions/app_colors_extension.dart';
 import 'package:buraq_enterprise_admin/core/constants/app_constants.dart';
 import 'package:buraq_enterprise_admin/screens/controllers/home/home_screen_controller.dart';
+import 'package:buraq_enterprise_admin/screens/controllers/splash/splash_screen_controller.dart';
 import 'package:buraq_enterprise_admin/utils/widgets/app_card_widget.dart';
 import 'package:buraq_enterprise_admin/utils/widgets/app_scroll_body.dart';
 import 'package:buraq_enterprise_admin/utils/widgets/app_text.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get_state_manager/src/simple/get_state.dart';
+import 'package:get/get.dart';
 
 class HomeScreenWidget extends StatelessWidget {
   const HomeScreenWidget({super.key});
@@ -15,6 +16,7 @@ class HomeScreenWidget extends StatelessWidget {
     return GetBuilder(
       init: HomeScreenController(),
       builder: (controller) {
+        final splashController = Get.find<SplashController>();
         return AppScrollableBody(
           child: Column(
             children: [
@@ -40,7 +42,7 @@ class HomeScreenWidget extends StatelessWidget {
                             ),
                           ),
                           SizedBox(height: 15),
-                          AppTextHeading(text: controller.totalProjects.toString()),
+                          AppTextHeading(text: splashController.projects.length.toString()),
                           SizedBox(height: 15),
                           AppTextBody(text: "Active Projects"),
                         ],
@@ -68,7 +70,7 @@ class HomeScreenWidget extends StatelessWidget {
                             ),
                           ),
                           SizedBox(height: 15),
-                          AppTextHeading(text: controller.totalEmployees.toString()),
+                          AppTextHeading(text: splashController.employees.length.toString()),
                           SizedBox(height: 15),
                           AppTextBody(text: "Total Employees"),
                         ],

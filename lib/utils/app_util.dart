@@ -404,4 +404,13 @@ class AppUtils {
       ],
     );
   }
+
+
+  static int calculateDaysRemaining(DateTime endDate) {
+    int daysRemaining = endDate.difference(DateTime.now()).inDays;
+    if (daysRemaining < 0) {
+      return 0;
+    }
+    return daysRemaining;
+  }
 }

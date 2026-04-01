@@ -3,8 +3,8 @@
 import 'package:buraq_enterprise_admin/core/config/app_session.dart';
 import 'package:buraq_enterprise_admin/core/config/router_refresh_stream.dart';
 import 'package:buraq_enterprise_admin/core/constants/app_constants.dart';
-import 'package:buraq_enterprise_admin/layouts/widget/auth_layout.dart';
-import 'package:buraq_enterprise_admin/layouts/widget/main_layout.dart';
+import 'package:buraq_enterprise_admin/layouts/auth_layout.dart';
+import 'package:buraq_enterprise_admin/layouts/main_layout.dart';
 import 'package:buraq_enterprise_admin/screens/auth/login_screen.dart';
 import 'package:buraq_enterprise_admin/screens/widgets/employees/add_employee_screen_widget.dart';
 import 'package:buraq_enterprise_admin/screens/widgets/employees/employee_screen_widget.dart';

@@ -2,6 +2,7 @@ import 'package:buraq_enterprise_admin/core/config/extensions/app_colors_extensi
 import 'package:buraq_enterprise_admin/core/constants/app_constants.dart';
 import 'package:buraq_enterprise_admin/core/constants/app_enum.dart';
 import 'package:buraq_enterprise_admin/screens/controllers/employees/employee_controller.dart';
+import 'package:buraq_enterprise_admin/screens/controllers/splash/splash_screen_controller.dart';
 import 'package:buraq_enterprise_admin/utils/app_util.dart';
 import 'package:buraq_enterprise_admin/utils/widgets/app_scroll_body.dart';
 import 'package:buraq_enterprise_admin/utils/widgets/app_spiner.dart';
@@ -22,22 +23,23 @@ class EmployeeScreenWidget extends StatelessWidget {
     return GetBuilder<EmployeeController>(
       init: EmployeeController(),
       builder: (controller) {
+        final splashController = Get.find<SplashController>();
         return Column(
           children: [
-            employeeHeader(context, controller),
+            employeeHeader(context, controller, splashController),
             Expanded(
               child: AppScrollableBody(
-                centerContent: controller.employees.isEmpty,
+                centerContent: splashController.employees.isEmpty,
                 child: Padding(
                   padding: EdgeInsets.only(top: screnHeight * 0.05),
                   child: Column(
                     children: [
                       Obx(() {
-                        if (controller.isLoading.value) {
+                        if (splashController.isEmployeesLoading.value) {
                           return AppSpiner();
                         }
-                        if (controller.employees.isEmpty &&
-                            !controller.isLoading.value) {
+                        if (splashController.employees.isEmpty &&
+                            !splashController.isEmployeesLoading.value) {
                           return AppUtils.noDataFound(
                             context: context,
                             heading: "No Employees Found",
@@ -48,7 +50,8 @@ class EmployeeScreenWidget extends StatelessWidget {
                           children: [
                             statusCards(
                               context: context,
-                              controller: controller,
+                              employeeController: controller,
+                              splashController: splashController,
                             ),
                             SizedBox(
                               height: AppConstants.commonVerticalSpacing,
@@ -132,7 +135,7 @@ class EmployeeScreenWidget extends StatelessWidget {
                                                 Icons.phone,
                                               ),
                                               StreamBuilder<int>(
-                                                stream: controller
+                                                stream: splashController
                                                     .getActiveProjectsCountStream(
                                                       employeeId,
                                                     ),
@@ -230,13 +233,14 @@ class EmployeeScreenWidget extends StatelessWidget {
 
   Row statusCards({
     required BuildContext context,
-    required EmployeeController controller,
+    required EmployeeController employeeController,
+    required SplashController splashController,
   }) {
-    final employeeLength = controller.employees.length;
-    final activeEmployeeLength = controller.employees
+    final employeeLength = splashController.employees.length;
+    final activeEmployeeLength = splashController.employees
         .where((e) => e.status == Status.active.name)
         .length;
-    final inActiveEmployeeLength = controller.employees
+    final inActiveEmployeeLength = splashController.employees
         .where((e) => e.status == Status.inactive.name)
         .length;
 
@@ -295,12 +299,12 @@ class EmployeeScreenWidget extends StatelessWidget {
     );
   }
 
-  Row employeeHeader(BuildContext context, EmployeeController controller) {
+  Row employeeHeader(BuildContext context, EmployeeController controller, SplashController splashController) {
     return Row(
       children: [
         Expanded(
           child: AppTextField(
-            enabled: !controller.isLoading.value,
+            enabled: !splashController.isEmployeesLoading.value,
             controller: controller.searchController,
             hintText: "Search employee...",
             prefixIcon: const Icon(Icons.search),
