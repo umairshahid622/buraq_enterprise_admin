@@ -47,18 +47,24 @@ class SplashController extends GetxController {
       employees.bindStream(employeeRepository.fetchEmployees());
       projects.bindStream(projectRepository.fetchProjects());
 
-    ever(employees, (_){
-      if (isEmployeesLoading.value) {
-        isEmployeesLoading.value = false;
-      }
-      update();
-    });
-    ever(projects, (_){
-      if (isProjectsLoading.value) {
-        isProjectsLoading.value = false;
-      }
-      update();
-    });
+      ever(employees, (_) {
+        if (isEmployeesLoading.value) {
+          isEmployeesLoading.value = false;
+        }
+        update();
+      });
+      ever(projects, (_) {
+        if (isProjectsLoading.value) {
+          isProjectsLoading.value = false;
+        }
+        update();
+      });
+    } else {
+      // No auth session: stop loading spinners and clear lists
+      employees.clear();
+      projects.clear();
+      isEmployeesLoading.value = false;
+      isProjectsLoading.value = false;
     }
 
     await Future.delayed(const Duration(milliseconds: 1500));

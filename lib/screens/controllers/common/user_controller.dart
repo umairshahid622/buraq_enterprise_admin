@@ -51,6 +51,7 @@ class UserController extends GetxController {
         _user.value = UserModel.fromMap(data);
       } else {
         _user.value = null;
+        await _authRepo.signOut();
       }
     } catch (e) {
       _user.value = null;
