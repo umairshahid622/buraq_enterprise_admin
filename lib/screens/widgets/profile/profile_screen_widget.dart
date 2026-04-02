@@ -17,7 +17,9 @@ class ProfileScreenWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final profileWidgetController = Get.put(ProfileWidgetController(Get.put(AuthRepository())));
+    final profileWidgetController = Get.put(
+      ProfileWidgetController(Get.put(AuthRepository())),
+    );
     final AppColorScheme appColorScheme = context.appColors;
     final double screenHeight = MediaQuery.of(context).size.height;
     final double spacing = screenHeight * 0.05;
@@ -40,11 +42,12 @@ class ProfileScreenWidget extends StatelessWidget {
             SizedBox(height: spacing / 2),
             AppTextHeading(text: "Account", fontSize: 22),
             SizedBox(height: spacing / 4),
-            InkWell(
-              onTap: (){
+            AppCardWidget(
+              onTap: () {
                 context.push('/profile/change-name');
               },
-              child: AppCardWidget(cardWidget: getChangeNameCard(context))),
+              cardWidget: getChangeNameCard(context),
+            ),
             SizedBox(height: spacing),
             _logoutButton(profileWidgetController, userController),
           ],
@@ -90,7 +93,11 @@ class ProfileScreenWidget extends StatelessWidget {
 
     return Row(
       children: [
-        AppUtils.getNameInitalsContainer(colorScheme: appColorScheme, firstName: firstName, lastName: lastName),
+        AppUtils.getNameInitalsContainer(
+          colorScheme: appColorScheme,
+          firstName: firstName,
+          lastName: lastName,
+        ),
         SizedBox(width: 15),
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -113,7 +120,10 @@ class ProfileScreenWidget extends StatelessWidget {
     );
   }
 
-  Widget _logoutButton(ProfileWidgetController profileWidgetController, UserController userController) {
+  Widget _logoutButton(
+    ProfileWidgetController profileWidgetController,
+    UserController userController,
+  ) {
     return Obx(() {
       return AppFilledButton(
         isLoading: profileWidgetController.isLoading.value,
