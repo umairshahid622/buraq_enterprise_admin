@@ -22,6 +22,8 @@ class ProjectMembersController extends GetxController {
 
   final Map<String, TextEditingController> allocationControllers = {};
   final Map<String, int> _lastAllocationValues = {};
+  final TextEditingController projectBudgetController =
+      TextEditingController();
 
   final RxList<String> selectedEmployeeIds = <String>[].obs;
 
@@ -185,7 +187,57 @@ class ProjectMembersController extends GetxController {
     }
   }
 
+  Future<void> updateProjectBudget() async {
+    final int? amount = int.tryParse(projectBudgetController.text.trim());
+    if (amount == null) {
+      AppUtils.showToast(
+        label: "Enter a valid amount",
+        vairant: ToastVariants.error,
+      );
+      return;
+    }
+    if (amount < 0) {
+      AppUtils.showToast(
+        label: "Amount cannot be negative",
+        vairant: ToastVariants.error,
+      );
+      return;
+    }
+
+    isActionLoading.value = true;
+    update();
+    try {
+      await _projectRepository.updateProjectBudget(
+        projectId: projectId,
+        newTotalBudget: amount,
+      );
+      AppUtils.showToast(
+        label: "Project budget updated",
+        vairant: ToastVariants.success,
+      );
+    } catch (e) {
+      AppUtils.showToast(
+        label: AppUtils.getFirebaseErrorMessage(message: e.toString()),
+        vairant: ToastVariants.error,
+      );
+    } finally {
+      isActionLoading.value = false;
+      update();
+    }
+  }
+
   void _syncControllers() {
+    final projectModel = project;
+    if (projectModel != null) {
+      final int? currentBudget =
+          int.tryParse(projectBudgetController.text.trim());
+      if (currentBudget == null ||
+          currentBudget == projectModel.totalBudgetAllocated) {
+        projectBudgetController.text =
+            projectModel.totalBudgetAllocated.toString();
+      }
+    }
+
     for (final member in members) {
       final controller = allocationControllerFor(member.employeeId);
       final int? currentValue = int.tryParse(controller.text.trim());
@@ -203,6 +255,7 @@ class ProjectMembersController extends GetxController {
       controller.dispose();
     }
     allocationControllers.clear();
+    projectBudgetController.dispose();
     super.dispose();
   }
 }

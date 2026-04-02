@@ -71,6 +71,13 @@ class ProjectMembersScreenWidget extends StatelessWidget {
                             SizedBox(
                               height: AppConstants.commonVerticalSpacing,
                             ),
+                            _projectBudgetEditor(
+                              context: context,
+                              controller: controller,
+                            ),
+                            SizedBox(
+                              height: AppConstants.commonVerticalSpacing,
+                            ),
                             _addMemberSection(
                               context: context,
                               controller: controller,
@@ -325,6 +332,43 @@ class ProjectMembersScreenWidget extends StatelessWidget {
                         onPressedCallBack: controller.addMember,
                       );
                     }),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _projectBudgetEditor({
+    required BuildContext context,
+    required ProjectMembersController controller,
+  }) {
+    return AppCardWidget(
+      cardWidget: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          AppTextHeading(text: "Edit Project Budget"),
+          SizedBox(height: 10),
+          Row(
+            children: [
+              Expanded(
+                child: AppTextField(
+                  type: TextFieldType.amount,
+                  controller: controller.projectBudgetController,
+                  hintText: "0",
+                  prefixIcon: const Icon(Icons.account_balance_wallet_outlined),
+                ),
+              ),
+              SizedBox(width: 12),
+              Obx(() {
+                return AppFilledButton(
+                  buttonText: "Save",
+                  buttonWidth: 90,
+                  buttonHeight: 48,
+                  isLoading: controller.isActionLoading.value,
+                  onPressedCallBack: controller.updateProjectBudget,
+                );
+              }),
             ],
           ),
         ],

@@ -314,4 +314,42 @@ class ProjectRepository {
       }
     });
   }
+
+  Future<void> updateProjectBudget({
+    required String projectId,
+    required int newTotalBudget,
+  }) async {
+    if (newTotalBudget < 0) {
+      throw Exception("Amount cannot be negative.");
+    }
+
+    final projectRef = _db.collection('projects').doc(projectId);
+
+    await _db.runTransaction((transaction) async {
+      final projectSnap = await transaction.get(projectRef);
+      if (!projectSnap.exists) {
+        throw Exception("Project not found.");
+      }
+
+      final projectData = projectSnap.data() as Map<String, dynamic>;
+      final int currentTotal =
+          (projectData['totalBudgetAllocated'] ?? 0) as int;
+      final int currentRemaining =
+          (projectData['remainingBudget'] ?? 0) as int;
+
+      final int delta = newTotalBudget - currentTotal;
+      final int newRemaining = currentRemaining + delta;
+
+      if (newRemaining < 0) {
+        throw Exception("New budget is less than already allocated amount.");
+      }
+
+      transaction.update(projectRef, {
+        'totalBudgetAllocated': newTotalBudget,
+        'remainingBudget': newRemaining,
+        'updatedBy': _auth.currentUser!.uid,
+        'updatedAt': FieldValue.serverTimestamp(),
+      });
+    });
+  }
 }
