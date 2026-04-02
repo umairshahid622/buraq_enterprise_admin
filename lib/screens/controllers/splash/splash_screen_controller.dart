@@ -16,13 +16,12 @@ class SplashController extends GetxController {
   final ProjectRepository projectRepository = ProjectRepository();
 
   final RxList<Employee> employees = <Employee>[].obs;    
-  RxList<ProjectModel> projects = <ProjectModel>[].obs;
+  final RxList<ProjectModel> projects = <ProjectModel>[].obs;
   
   late final UserController _userController;
-  
-  final EmployeeRepository _employeeRepository = EmployeeRepository();
+    
   Stream<int> getActiveProjectsCountStream(String employeeId) {
-    return _employeeRepository.activeProjectsCountStream(employeeId);    
+    return projectRepository.activeProjectsCountStream(employeeId);    
   }
 
 

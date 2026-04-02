@@ -1,3 +1,4 @@
+import 'package:buraq_enterprise_admin/core/constants/app_enum.dart';
 import 'package:buraq_enterprise_admin/models/project_model.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -101,5 +102,14 @@ class ProjectRepository {
     }
 
     batch.commit();
+  }
+
+    Stream<int> activeProjectsCountStream(String employeeId) {
+    return _db
+        .collection('projects')
+        .where('employeeIds', arrayContains: employeeId)
+        .where('status', isEqualTo: Status.active.name)
+        .snapshots()
+        .map((snapshot) => snapshot.docs.length);
   }
 }

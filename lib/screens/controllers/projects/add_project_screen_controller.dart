@@ -22,6 +22,13 @@ class AddProjectScreenController extends GetxController {
 
   final List<String> selectedEmployeeIds = [];
 
+  @override
+  void onInit() {
+    super.onInit();
+    startDateController.text =
+        AppUtils.dateFormatter(DateTime.now().toString());
+  }
+
   bool isEmployeeSelected(String empId) {
     return selectedEmployeeIds.contains(empId);
   }

@@ -20,6 +20,7 @@ class EmployeeScreenWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     double screnHeight = MediaQuery.of(context).size.height;
+    
     return GetBuilder<EmployeeController>(
       init: EmployeeController(),
       builder: (controller) {
@@ -30,7 +31,7 @@ class EmployeeScreenWidget extends StatelessWidget {
               child: AppScrollableBody(
                 centerContent: controller.splashController.employees.isEmpty,
                 child: Padding(
-                  padding: EdgeInsets.only(top: screnHeight * 0.05),
+                  padding: EdgeInsets.symmetric(vertical: screnHeight * 0.05),
                   child: Column(
                     children: [
                       Obx(() {
@@ -305,7 +306,7 @@ class EmployeeScreenWidget extends StatelessWidget {
           child: AppTextField(
             enabled: !splashController.isEmployeesLoading.value,
             controller: controller.searchController,
-            hintText: "Search employee...",
+            hintText: "Search employee ...",
             prefixIcon: const Icon(Icons.search),
           ),
         ),

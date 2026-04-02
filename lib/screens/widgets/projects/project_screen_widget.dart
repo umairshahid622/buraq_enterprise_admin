@@ -19,7 +19,8 @@ class ProjectScreenWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final double screenHeight = MediaQuery.of(context).size.height;
+    final double screenHeight = MediaQuery.of(context).size.height;        
+
     return GetBuilder<ProjectScreenController>(
       init: ProjectScreenController(),
       builder: (controller) {
@@ -346,7 +347,7 @@ class ProjectScreenWidget extends StatelessWidget {
           child: AppTextField(
             enabled: !controller.splashController.isProjectsLoading.value,
             controller: controller.projectSearchController,
-            hintText: "Search project...",
+            hintText: "Search project ...",
             onTextChangeCallBack: (value) {
               controller.onSearchChanged(value);
             },

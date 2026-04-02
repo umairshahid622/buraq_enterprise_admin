@@ -76,14 +76,6 @@ class EmployeeRepository {
         });
   }
 
-  Stream<int> activeProjectsCountStream(String employeeId) {
-    return _db
-        .collection('projects')
-        .where('employeeIds', arrayContains: employeeId)
-        .where('status', isEqualTo: Status.active.name)
-        .snapshots()
-        .map((snapshot) => snapshot.docs.length);
-  }
 
   Future allocateAmountHistory({
     required String allocateBy,
