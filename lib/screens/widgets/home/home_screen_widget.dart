@@ -13,9 +13,8 @@ class HomeScreenWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GetBuilder(
-      init: HomeScreenController(),
-      builder: (controller) {
+    final controller = Get.put(HomeScreenController());
+    return Obx(() {
         final splashController = controller.splashController;
         return AppScrollableBody(
           child: Column(
@@ -145,7 +144,6 @@ class HomeScreenWidget extends StatelessWidget {
             ],
           ),
         );
-      }
-    );
+      });
   }
 }
