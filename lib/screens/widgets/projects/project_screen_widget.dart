@@ -19,7 +19,7 @@ class ProjectScreenWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final double screenHeight = MediaQuery.of(context).size.height;        
+    final double screenHeight = MediaQuery.of(context).size.height;
 
     return GetBuilder<ProjectScreenController>(
       init: ProjectScreenController(),
@@ -35,12 +35,19 @@ class ProjectScreenWidget extends StatelessWidget {
                   child: Column(
                     children: [
                       Obx(() {
-                        if (controller.splashController.isProjectsLoading.value) {
+                        if (controller
+                            .splashController
+                            .isProjectsLoading
+                            .value) {
                           return AppSpiner();
                         }
 
                         if (controller.splashController.projects.isEmpty) {
-                          return AppUtils.noDataFound(context: context, heading: "No projects found", subHeading: "Add a project to get started");        
+                          return AppUtils.noDataFound(
+                            context: context,
+                            heading: "No projects found",
+                            subHeading: "Add a project to get started",
+                          );
                         }
 
                         return Column(
@@ -85,7 +92,10 @@ class ProjectScreenWidget extends StatelessWidget {
                                     project.remainingBudget;
                                 final spentBudget =
                                     totalBudget - remainingBudget;
-                                final int daysRemaining = AppUtils.calculateDaysRemaining(project.endDate);
+                                final int daysRemaining =
+                                    AppUtils.calculateDaysRemaining(
+                                      project.endDate,
+                                    );
 
                                 final double progressValue =
                                     AppUtils.calculatePercentage(
@@ -94,6 +104,9 @@ class ProjectScreenWidget extends StatelessWidget {
                                     );
 
                                 return AppCardWidget(
+                                  onTap: () {
+                                    context.go('/projects/manage/$projectId');
+                                  },
                                   cardWidget: Column(
                                     crossAxisAlignment:
                                         CrossAxisAlignment.start,
