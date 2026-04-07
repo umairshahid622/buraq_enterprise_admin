@@ -1,14 +1,13 @@
-
 import 'package:buraq_enterprise_admin/core/config/extensions/app_colors_extension.dart';
 import 'package:buraq_enterprise_admin/core/constants/app_constants.dart';
 import 'package:buraq_enterprise_admin/utils/widgets/app_text.dart';
 import 'package:buraq_enterprise_admin/utils/widgets/buttons/theme_toggle_button.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get_state_manager/src/rx_flutter/rx_obx_widget.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class MainLayout extends StatelessWidget {
-  
   final StatefulNavigationShell navigationShell;
   const MainLayout({super.key, required this.navigationShell});
 
@@ -42,23 +41,21 @@ class MainLayout extends StatelessWidget {
         "heading": "Profile & Settings",
         "subHeading": "Manage your account preferences",
       },
-      
     };
 
     return Scaffold(
       appBar: AppBar(
         toolbarHeight: AppConstants.appBarHight,
-        leading:
-            isNestedRoute
-                ? IconButton(
-                  icon: Icon(Icons.arrow_back_ios_new_rounded),
-                  onPressed: () {
-                    if (GoRouter.of(context).canPop()) {
-                      context.pop();
-                    }
-                  },
-                )
-                : null,
+        leading: isNestedRoute
+            ? IconButton(
+                icon: Icon(Icons.arrow_back_ios_new_rounded),
+                onPressed: () {
+                  if (GoRouter.of(context).canPop()) {
+                    context.pop();
+                  }
+                },
+              )
+            : null,
         title: Column(
           mainAxisSize: MainAxisSize.min,
           mainAxisAlignment: MainAxisAlignment.start,
@@ -68,7 +65,7 @@ class MainLayout extends StatelessWidget {
               text: titles[location]?["heading"] ?? "",
               fontSize: AppConstants.mainHeadingFontSize,
             ),
-            SizedBox(height: 2.5,),
+            SizedBox(height: 2.5),
             AppTextBody(
               text: titles[location]?["subHeading"] ?? "",
               color: context.appColors.secondary,
@@ -81,37 +78,44 @@ class MainLayout extends StatelessWidget {
         padding: EdgeInsets.all(AppConstants.padding),
         child: navigationShell,
       ),
-      bottomNavigationBar: SizedBox(
-        child: BottomNavigationBar(
-          elevation: 1,
-          backgroundColor: context.appColors.surface,
-          selectedItemColor: context.appColors.primary,
-          unselectedItemColor: context.appColors.secondary,
-          selectedLabelStyle: GoogleFonts.inter(fontWeight: FontWeight.w600),
-          unselectedLabelStyle: GoogleFonts.inter(fontWeight: FontWeight.w600),
-          type: BottomNavigationBarType.fixed,
-          currentIndex: navigationShell.currentIndex,
-          onTap: onItemTapped,
-          items: const [
-            BottomNavigationBarItem(
-              icon: Icon(Icons.home_outlined),
-              label: 'Home',
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.people_outline),
-              label: 'Employees',
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.folder_outlined),
-              label: 'Projects',
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.account_circle_outlined),
-              label: 'Profile',
-            ),
-          ],
-        ),
-      ),
+      bottomNavigationBar: bottomNavBar(context, onItemTapped),
     );
+  }
+
+  Obx bottomNavBar(
+    BuildContext context,
+    void Function(int index) onItemTapped,
+  ) {
+    return Obx(() {
+      return BottomNavigationBar(
+        elevation: 1,
+        backgroundColor: context.appColors.surface,
+        selectedItemColor: context.appColors.primary,
+        unselectedItemColor: context.appColors.secondary,
+        selectedLabelStyle: GoogleFonts.inter(fontWeight: FontWeight.w600),
+        unselectedLabelStyle: GoogleFonts.inter(fontWeight: FontWeight.w600),
+        type: BottomNavigationBarType.fixed,
+        currentIndex: navigationShell.currentIndex,
+        onTap: onItemTapped,
+        items: const [
+          BottomNavigationBarItem(
+            icon: Icon(Icons.home_outlined),
+            label: 'Home',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.people_outline),
+            label: 'Employees',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.folder_outlined),
+            label: 'Projects',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.account_circle_outlined),
+            label: 'Profile',
+          ),
+        ],
+      );
+    });
   }
 }

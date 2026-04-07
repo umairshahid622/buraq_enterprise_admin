@@ -31,7 +31,7 @@ class ProjectScreenWidget extends StatelessWidget {
               child: AppScrollableBody(
                 centerContent: controller.splashController.projects.isEmpty,
                 child: Padding(
-                  padding: EdgeInsets.symmetric(vertical: screenHeight * 0.05),
+                  padding: EdgeInsets.only(top: screenHeight * 0.05),
                   child: Column(
                     children: [
                       Obx(() {
@@ -186,7 +186,10 @@ class ProjectScreenWidget extends StatelessWidget {
                               },
                               separatorBuilder:
                                   (BuildContext context, int index) {
-                                    return SizedBox(height: 10);
+                                    return SizedBox(
+                                      height:
+                                          AppConstants.commonVerticalSpacing,
+                                    );
                                   },
                               itemCount: controller.filteredProjects.length,
                             ),

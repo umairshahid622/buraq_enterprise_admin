@@ -129,8 +129,8 @@ class ProfileScreenWidget extends StatelessWidget {
         isLoading: profileWidgetController.isLoading.value,
         isEnable: !profileWidgetController.isLoading.value,
         onPressedCallBack: () {
-          print("object: ${userController.user}");
-          // profileWidgetController.logout();
+          // print("object: ${userController.user}");
+          profileWidgetController.logout();
         },
         buttonText: "Logout",
       );

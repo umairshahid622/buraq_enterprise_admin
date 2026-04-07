@@ -19,8 +19,8 @@ class EmployeeScreenWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    double screnHeight = MediaQuery.of(context).size.height;
-    
+    double screenHeight = MediaQuery.of(context).size.height;
+
     return GetBuilder<EmployeeController>(
       init: EmployeeController(),
       builder: (controller) {
@@ -31,15 +31,21 @@ class EmployeeScreenWidget extends StatelessWidget {
               child: AppScrollableBody(
                 centerContent: controller.splashController.employees.isEmpty,
                 child: Padding(
-                  padding: EdgeInsets.symmetric(vertical: screnHeight * 0.05),
+                  padding: EdgeInsets.only(top: screenHeight * 0.05),
                   child: Column(
                     children: [
                       Obx(() {
-                        if (controller.splashController.isEmployeesLoading.value) {
+                        if (controller
+                            .splashController
+                            .isEmployeesLoading
+                            .value) {
                           return AppSpiner();
                         }
                         if (controller.splashController.employees.isEmpty &&
-                            !controller.splashController.isEmployeesLoading.value) {
+                            !controller
+                                .splashController
+                                .isEmployeesLoading
+                                .value) {
                           return AppUtils.noDataFound(
                             context: context,
                             heading: "No Employees Found",
@@ -135,7 +141,8 @@ class EmployeeScreenWidget extends StatelessWidget {
                                                 Icons.phone,
                                               ),
                                               StreamBuilder<int>(
-                                                stream: controller.splashController
+                                                stream: controller
+                                                    .splashController
                                                     .getActiveProjectsCountStream(
                                                       employeeId,
                                                     ),
@@ -299,7 +306,11 @@ class EmployeeScreenWidget extends StatelessWidget {
     );
   }
 
-  Row employeeHeader(BuildContext context, EmployeeController controller, SplashController splashController) {
+  Row employeeHeader(
+    BuildContext context,
+    EmployeeController controller,
+    SplashController splashController,
+  ) {
     return Row(
       children: [
         Expanded(
