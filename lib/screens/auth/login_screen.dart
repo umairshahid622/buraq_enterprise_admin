@@ -66,7 +66,6 @@ class LoginScreen extends StatelessWidget {
 
   AppTextField _phoneNumberField(LoginController controller) {
     return AppTextField(
-      maxLength: 12,
       prefixIcon: const Icon(Icons.phone),
       type: TextFieldType.phoneNumber,
       controller: controller.phoneNumberController,

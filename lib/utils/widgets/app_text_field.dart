@@ -5,6 +5,7 @@ import 'package:buraq_enterprise_admin/core/constants/app_enum.dart';
 import 'package:buraq_enterprise_admin/utils/app_util.dart';
 import 'package:buraq_enterprise_admin/utils/widgets/app_text.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get_state_manager/src/rx_flutter/rx_obx_widget.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -58,23 +59,31 @@ class AppTextField extends StatelessWidget {
   Widget build(BuildContext context) {
     final TextInputType keyBoardType;
     final Widget? defaultPrefixIcon;
+    final List<TextInputFormatter>? inputFormatters;
 
     switch (type) {
       case TextFieldType.email:
         keyBoardType = TextInputType.emailAddress;
+        inputFormatters = [];
         defaultPrefixIcon = null;
         break;
       case TextFieldType.otp || TextFieldType.amount:
         keyBoardType = TextInputType.number;
+        inputFormatters = [];
         defaultPrefixIcon = null;
         break;
       case TextFieldType.phoneNumber:
         keyBoardType = TextInputType.phone;
+        inputFormatters = [
+          FilteringTextInputFormatter.digitsOnly,
+          LengthLimitingTextInputFormatter(11),
+        ];
         defaultPrefixIcon = const Icon(Icons.phone);
         break;
       default:
         keyBoardType = TextInputType.text;
         defaultPrefixIcon = Icon(Icons.edit_note_rounded);
+        inputFormatters = [];
         break;
     }
 
@@ -96,6 +105,7 @@ class AppTextField extends StatelessWidget {
             SizedBox(height: AppConstants.textFieldLabelMarginVertical),
 
           TextFormField(
+            inputFormatters: inputFormatters,
             onTapOutside: (event) {
               FocusManager.instance.primaryFocus?.unfocus();
             },

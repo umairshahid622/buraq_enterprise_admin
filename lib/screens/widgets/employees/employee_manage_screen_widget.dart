@@ -12,7 +12,6 @@ import 'package:buraq_enterprise_admin/utils/widgets/buttons/app_filled_button.d
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:go_router/go_router.dart';
 
 class EmployeeManageScreenWidget extends StatelessWidget {
   const EmployeeManageScreenWidget({super.key, required this.employeeId});
@@ -189,8 +188,9 @@ class EmployeeManageScreenWidget extends StatelessWidget {
                   elevation: 0,
                   height: 52,
                   decoration: BoxDecoration(
-                    borderRadius:
-                        BorderRadius.circular(AppConstants.borderRadius),
+                    borderRadius: BorderRadius.circular(
+                      AppConstants.borderRadius,
+                    ),
                     border: Border.all(color: context.appColors.outline),
                   ),
                 ),
@@ -198,8 +198,9 @@ class EmployeeManageScreenWidget extends StatelessWidget {
                   elevation: 1,
                   decoration: BoxDecoration(
                     border: Border.all(color: context.appColors.outline),
-                    borderRadius:
-                        BorderRadius.circular(AppConstants.borderRadius),
+                    borderRadius: BorderRadius.circular(
+                      AppConstants.borderRadius,
+                    ),
                   ),
                 ),
                 iconStyleData: const IconStyleData(
