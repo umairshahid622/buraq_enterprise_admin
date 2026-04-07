@@ -2,7 +2,7 @@ import 'package:buraq_enterprise_admin/core/config/app_router.dart';
 import 'package:buraq_enterprise_admin/core/config/colors/app_theme.dart';
 import 'package:buraq_enterprise_admin/core/constants/app_constants.dart';
 import 'package:buraq_enterprise_admin/firebase_options.dart';
-import 'package:buraq_enterprise_admin/screens/bindings/initial_bindings.dart';
+import 'package:buraq_enterprise_admin/core/bindings/initial_bindings.dart';
 
 import 'package:buraq_enterprise_admin/screens/controllers/common/theme_controller.dart';
 
@@ -12,10 +12,10 @@ import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 
 void main() async {
-   WidgetsFlutterBinding.ensureInitialized();
+  WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   await GetStorage.init();
-  InitialBinding().dependencies();  
+  InitialBinding().dependencies();
   runApp(const MyApp());
 }
 
@@ -25,7 +25,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final themeController = Get.find<ThemeController>();
-    
+
     return Obx(() {
       return MaterialApp.router(
         debugShowCheckedModeBanner: false,
@@ -35,7 +35,6 @@ class MyApp extends StatelessWidget {
         themeMode: themeController.themeMode,
         scaffoldMessengerKey: AppConstants.scaffoldMessengerKey,
         routerConfig: appRouter,
-        
       );
     });
   }
