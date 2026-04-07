@@ -25,10 +25,13 @@ class AddProjectScreenWidget extends StatelessWidget {
       builder: (controller) {
         final splashController = Get.find<SplashController>();
         if (splashController.employees.isEmpty) {
-          
           return AppScrollableBody(
             centerContent: true,
-            child: AppUtils.noDataFound(context: context, heading: "No Employee found to allocate the project", subHeading: "Add a Employee to get started"),
+            child: AppUtils.noDataFound(
+              context: context,
+              heading: "No Employee found to allocate the project",
+              subHeading: "Add a Employee to get started",
+            ),
           );
         }
         return AppScrollableBody(
@@ -174,7 +177,6 @@ class AddProjectScreenWidget extends StatelessWidget {
             DropdownButtonHideUnderline(
               child: DropdownButton2<String>(
                 isExpanded: true,
-
                 hint: AppTextBody(
                   text: displayText,
                   color: context.appColors.secondary,

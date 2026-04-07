@@ -7,6 +7,7 @@ import 'package:buraq_enterprise_admin/layouts/auth_layout.dart';
 import 'package:buraq_enterprise_admin/layouts/main_layout.dart';
 import 'package:buraq_enterprise_admin/screens/auth/login_screen.dart';
 import 'package:buraq_enterprise_admin/screens/widgets/employees/add_employee_screen_widget.dart';
+import 'package:buraq_enterprise_admin/screens/widgets/employees/employee_manage_screen_widget.dart';
 import 'package:buraq_enterprise_admin/screens/widgets/employees/employee_screen_widget.dart';
 import 'package:buraq_enterprise_admin/screens/widgets/home/home_screen_widget.dart';
 import 'package:buraq_enterprise_admin/screens/widgets/profile/change_name_screen_widget.dart';
@@ -68,6 +69,14 @@ final appRouter = GoRouter(
                   path: 'add-employee',
                   pageBuilder: (context, state) =>
                       NoTransitionPage(child: AddEmployeeScreenWidget()),
+                ),
+                GoRoute(
+                  path: 'manage/:employeeId',
+                  pageBuilder: (context, state) => NoTransitionPage(
+                    child: EmployeeManageScreenWidget(
+                      employeeId: state.pathParameters['employeeId'] ?? '',
+                    ),
+                  ),
                 ),
               ],
             ),

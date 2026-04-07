@@ -1,10 +1,8 @@
-
-
 import 'package:flutter/material.dart';
 
 class AppConstants {
-
-  static final GlobalKey<NavigatorState> rootNavigatorKey = GlobalKey<NavigatorState>();
+  static final GlobalKey<NavigatorState> rootNavigatorKey =
+      GlobalKey<NavigatorState>();
   static final GlobalKey<ScaffoldMessengerState> scaffoldMessengerKey =
       GlobalKey<ScaffoldMessengerState>();
   static final double borderRadius = 16;
@@ -17,6 +15,5 @@ class AppConstants {
   static final double bottomNavigationBarHeight = 65;
   static final double appBarHight = 65;
   static final double textFieldLabelMargin = 10;
-
-  
+  static final double textFieldLabelMarginVertical = 8;
 }

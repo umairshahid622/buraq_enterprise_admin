@@ -76,6 +76,55 @@ class EmployeeRepository {
         });
   }
 
+  Future<void> updateEmployee({
+    required String employeeId,
+    required String firstName,
+    required String lastName,
+    required String phoneNumber,
+    required String status,
+  }) async {
+    final String formattedPhone = AppUtils.getFormattedPhoneNumber(
+      phoneNumber: phoneNumber,
+    );
+
+    final userRef = _db.collection('users').doc(employeeId);
+    final userSnap = await userRef.get();
+
+    if (!userSnap.exists) {
+      throw Exception("Employee not found.");
+    }
+
+    final currentPhone = (userSnap.data()?['phone'] ?? '') as String;
+
+    if (formattedPhone != currentPhone) {
+      final existingUser = await _db
+          .collection('users')
+          .where('phone', isEqualTo: formattedPhone)
+          .get();
+
+      if (existingUser.docs.isNotEmpty) {
+        final existingDoc = existingUser.docs.first;
+        if (existingDoc.id != employeeId) {
+          final role = existingDoc.data()['role'];
+          if (role == Roles.admin.name) {
+            throw Exception(
+              "This phone number is registered to an Admin account and cannot be used for an employee.",
+            );
+          }
+          throw Exception("An employee with this phone number already exists.");
+        }
+      }
+    }
+
+    await userRef.update({
+      'first_name': firstName,
+      'last_name': lastName,
+      'phone': formattedPhone,
+      'status': status,
+      'updatedBy': _auth.currentUser!.uid,
+      'updatedAt': FieldValue.serverTimestamp(),
+    });
+  }
 
   Future allocateAmountHistory({
     required String allocateBy,

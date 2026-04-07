@@ -78,20 +78,22 @@ class AppTextField extends StatelessWidget {
         break;
     }
 
-
     final FocusNode focus = focusNode ?? FocusNode();
-
 
     return Obx(() {
       final AppColorScheme appColorScheme = context.appColors;
       return Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          if (labelText != null) Padding(
-            padding: EdgeInsets.symmetric(horizontal: AppConstants.textFieldLabelMargin),
-            child: AppTextHeading(text: labelText!, fontSize: 14),
-          ),
-          if (labelText != null) const SizedBox(height: 8),
+          if (labelText != null)
+            Padding(
+              padding: EdgeInsets.symmetric(
+                horizontal: AppConstants.textFieldLabelMargin,
+              ),
+              child: AppTextHeading(text: labelText!, fontSize: 14),
+            ),
+          if (labelText != null)
+            SizedBox(height: AppConstants.textFieldLabelMarginVertical),
 
           TextFormField(
             onTapOutside: (event) {
@@ -119,8 +121,10 @@ class AppTextField extends StatelessWidget {
                 return AppUtils.phoneNumberValidator(value: value ?? "");
               } else if (type == TextFieldType.text) {
                 return AppUtils.textValidator(value: value ?? "");
-              } else if (type == TextFieldType.amount){
-                return AppUtils.amountValidator(value: int.tryParse(value ?? ""));
+              } else if (type == TextFieldType.amount) {
+                return AppUtils.amountValidator(
+                  value: int.tryParse(value ?? ""),
+                );
               } else {
                 return null;
               }

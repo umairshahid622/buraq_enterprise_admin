@@ -23,6 +23,7 @@ class EmployeeScreenWidget extends StatelessWidget {
 
     return GetBuilder<EmployeeController>(
       init: EmployeeController(),
+      dispose: (controller) => Get.delete<EmployeeController>(),
       builder: (controller) {
         return Column(
           children: [
@@ -91,6 +92,11 @@ class EmployeeScreenWidget extends StatelessWidget {
                                     0;
 
                                 return AppCardWidget(
+                                  onTap: () {
+                                    context.go(
+                                      '/employees/manage/$employeeId',
+                                    );
+                                  },
                                   cardWidget: Row(
                                     crossAxisAlignment:
                                         CrossAxisAlignment.start,
