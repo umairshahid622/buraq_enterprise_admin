@@ -254,64 +254,150 @@ class ProjectRepository {
     });
   }
 
-  Future<void> updateMemberAllocation({
+  // Future<void> updateMemberAllocation({
+  //   required String projectId,
+  //   required String employeeId,
+  //   required int newAmount,
+  // }) async {
+  //   if (newAmount < 0) {
+  //     throw Exception("Amount cannot be negative.");
+  //   }
+
+  //   final projectRef = _db.collection('projects').doc(projectId);
+  //   final memberRef =
+  //       _db.collection('project_members').doc('${projectId}_$employeeId');
+  //   final userRef = _db.collection('users').doc(employeeId);
+
+  //   await _db.runTransaction((transaction) async {
+  //     final projectSnap = await transaction.get(projectRef);
+  //     final memberSnap = await transaction.get(memberRef);
+  //     final userSnap = await transaction.get(userRef);
+
+  //     if (!projectSnap.exists || !memberSnap.exists) {
+  //       throw Exception("Project member not found.");
+  //     }
+
+  //     final project = ProjectModel.fromSnapshot(projectSnap);
+  //     final member = ProjectMember.fromSnapshot(memberSnap);
+
+  //     final int currentRemaining = project.remainingBudget;
+  //     final int oldAmount = member.allocatedAmount;
+  //     final int delta = newAmount - oldAmount;
+
+  //     // if (currentRemaining - delta < 0) {
+  //     //   throw Exception("Insufficient remaining budget for this allocation.");
+  //     // }
+
+  //     transaction.update(projectRef, {
+  //       'remainingBudget': currentRemaining - delta,
+  //       'updatedBy': _auth.currentUser!.uid,
+  //       'updatedAt': FieldValue.serverTimestamp(),
+  //     });
+
+  //     transaction.update(memberRef, {
+  //       'allocatedAmount': newAmount,
+  //       'updatedBy': _auth.currentUser!.uid,
+  //       'updatedAt': FieldValue.serverTimestamp(),
+  //     });
+
+  //     if (userSnap.exists) {
+  //       final user = Employee.fromSnapshot(userSnap);
+  //       final int userAllocated = user.allocatedAmount;
+  //       final int userRemaining = user.remaining;
+
+  //       transaction.update(userRef, {
+  //         'allocatedAmount': userAllocated + delta,
+  //         'remaining': userRemaining + delta,
+  //         'updatedBy': _auth.currentUser!.uid,
+  //         'updatedAt': FieldValue.serverTimestamp(),
+  //       });
+  //     }
+  //   });
+  // }
+
+  Future<void> updateAllMembersAllocations({
     required String projectId,
-    required String employeeId,
-    required int newAmount,
+    required Map<String, int> allocationsToUpdate,
   }) async {
-    if (newAmount < 0) {
-      throw Exception("Amount cannot be negative.");
+    for (final amount in allocationsToUpdate.values) {
+      if (amount < 0) {
+        throw Exception("Amount cannot be negative.");
+      }
     }
 
     final projectRef = _db.collection('projects').doc(projectId);
-    final memberRef =
-        _db.collection('project_members').doc('${projectId}_$employeeId');
-    final userRef = _db.collection('users').doc(employeeId);
 
     await _db.runTransaction((transaction) async {
       final projectSnap = await transaction.get(projectRef);
-      final memberSnap = await transaction.get(memberRef);
-      final userSnap = await transaction.get(userRef);
 
-      if (!projectSnap.exists || !memberSnap.exists) {
-        throw Exception("Project member not found.");
+      if (!projectSnap.exists) {
+        throw Exception("Project not found.");
       }
 
       final project = ProjectModel.fromSnapshot(projectSnap);
-      final member = ProjectMember.fromSnapshot(memberSnap);
+      int currentRemaining = project.remainingBudget;
 
-      final int currentRemaining = project.remainingBudget;
-      final int oldAmount = member.allocatedAmount;
-      final int delta = newAmount - oldAmount;
+      Map<String, DocumentSnapshot> memberSnaps = {};
+      Map<String, DocumentSnapshot> userSnaps = {};
 
-      if (currentRemaining - delta < 0) {
-        throw Exception("Insufficient remaining budget for this allocation.");
+      for (String employeeId in allocationsToUpdate.keys) {
+        final memberRef =
+            _db.collection('project_members').doc('${projectId}_$employeeId');
+        final userRef = _db.collection('users').doc(employeeId);
+        memberSnaps[employeeId] = await transaction.get(memberRef);
+        userSnaps[employeeId] = await transaction.get(userRef);
       }
 
-      transaction.update(projectRef, {
-        'remainingBudget': currentRemaining - delta,
-        'updatedBy': _auth.currentUser!.uid,
-        'updatedAt': FieldValue.serverTimestamp(),
-      });
+      int totalDelta = 0;
 
-      transaction.update(memberRef, {
-        'allocatedAmount': newAmount,
-        'updatedBy': _auth.currentUser!.uid,
-        'updatedAt': FieldValue.serverTimestamp(),
-      });
+      for (var entry in allocationsToUpdate.entries) {
+        String employeeId = entry.key;
+        int newAmount = entry.value;
 
-      if (userSnap.exists) {
-        final user = Employee.fromSnapshot(userSnap);
-        final int userAllocated = user.allocatedAmount;
-        final int userRemaining = user.remaining;
+        final memberSnap = memberSnaps[employeeId]!;
+        if (!memberSnap.exists) {
+          throw Exception("Project member $employeeId not found.");
+        }
 
-        transaction.update(userRef, {
-          'allocatedAmount': userAllocated + delta,
-          'remaining': userRemaining + delta,
+        final member = ProjectMember.fromSnapshot(memberSnap);
+        final int oldAmount = member.allocatedAmount;
+        final int delta = newAmount - oldAmount;
+
+        totalDelta += delta;
+
+        final memberRef =
+            _db.collection('project_members').doc('${projectId}_$employeeId');
+        transaction.update(memberRef, {
+          'allocatedAmount': newAmount,
           'updatedBy': _auth.currentUser!.uid,
           'updatedAt': FieldValue.serverTimestamp(),
         });
+
+        final userSnap = userSnaps[employeeId]!;
+        if (userSnap.exists) {
+          final user = Employee.fromSnapshot(userSnap);
+          final int userAllocated = user.allocatedAmount;
+          final int userRemaining = user.remaining;
+          final userRef = _db.collection('users').doc(employeeId);
+
+          transaction.update(userRef, {
+            'allocatedAmount': userAllocated + delta,
+            'remaining': userRemaining + delta,
+            'updatedBy': _auth.currentUser!.uid,
+            'updatedAt': FieldValue.serverTimestamp(),
+          });
+        }
       }
+
+      // if (currentRemaining - totalDelta < 0) {
+      //   throw Exception("Insufficient remaining budget for these allocations.");
+      // }
+
+      transaction.update(projectRef, {
+        'remainingBudget': currentRemaining - totalDelta,
+        'updatedBy': _auth.currentUser!.uid,
+        'updatedAt': FieldValue.serverTimestamp(),
+      });
     });
   }
 

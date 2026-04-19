@@ -91,29 +91,44 @@ class ProjectMembersScreenWidget extends StatelessWidget {
                                     text: "No employees assigned yet",
                                     fontSize: 16,
                                   )
-                                : ListView.separated(
-                                    shrinkWrap: true,
-                                    physics:
-                                        const NeverScrollableScrollPhysics(),
-                                    itemCount: controller.members.length,
-                                    itemBuilder: (context, index) {
-                                      final member = controller.members[index];
-                                      final employee = controller.getEmployee(
-                                        member.employeeId,
-                                      );
-                                      return _memberCard(
-                                        context: context,
-                                        controller: controller,
-                                        employee: employee,
-                                        employeeId: member.employeeId,
-                                      );
-                                    },
-                                    separatorBuilder: (context, index) {
-                                      return SizedBox(
+                                : Column(
+                                    children: [
+                                      ListView.separated(
+                                        shrinkWrap: true,
+                                        physics:
+                                            const NeverScrollableScrollPhysics(),
+                                        itemCount: controller.members.length,
+                                        itemBuilder: (context, index) {
+                                          final member = controller.members[index];
+                                          final employee = controller.getEmployee(
+                                            member.employeeId,
+                                          );
+                                          return _memberCard(
+                                            context: context,
+                                            controller: controller,
+                                            employee: employee,
+                                            employeeId: member.employeeId,
+                                          );
+                                        },
+                                        separatorBuilder: (context, index) {
+                                          return SizedBox(
+                                            height:
+                                                AppConstants.commonVerticalSpacing,
+                                          );
+                                        },
+                                      ),
+                                      SizedBox(
                                         height:
                                             AppConstants.commonVerticalSpacing,
-                                      );
-                                    },
+                                      ),
+                                      AppFilledButton(
+                                        buttonText: "Save All Allocations",
+                                        buttonWidth: double.infinity,
+                                        buttonHeight: 56,
+                                        isLoading: controller.isActionLoading.value,
+                                        onPressedCallBack: controller.updateAllAllocations,
+                                      ),
+                                    ],
                                   ),
                           ],
                         );
@@ -171,7 +186,7 @@ class ProjectMembersScreenWidget extends StatelessWidget {
               AppTextHeading(
                 text: AppUtils.formatPKR(remainingBudget),
                 fontSize: 16,
-                color: context.appColors.colorGreen,
+                color: remainingBudget > 0 ? context.appColors.colorGreen : context.appColors.error,
               ),
             ],
           ),
@@ -425,17 +440,6 @@ class ProjectMembersScreenWidget extends StatelessWidget {
                   prefixIcon: const Icon(Icons.payments_outlined),
                 ),
               ),
-              SizedBox(width: 12),
-              Obx(() {
-                return AppFilledButton(
-                  buttonText: "Save",
-                  buttonWidth: 90,
-                  buttonHeight: 48,
-                  isLoading: controller.isActionLoading.value,
-                  onPressedCallBack: () =>
-                      controller.updateAllocation(employeeId),
-                );
-              }),
             ],
           ),
         ],

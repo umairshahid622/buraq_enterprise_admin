@@ -145,20 +145,29 @@ class ProjectMembersController extends GetxController {
     }
   }
 
-  Future<void> updateAllocation(String employeeId) async {
-    final controller = allocationControllers[employeeId];
-    if (controller == null) return;
-    final int? amount = int.tryParse(controller.text.trim());
-    if (amount == null) {
-      AppUtils.showToast(
-        label: "Enter a valid amount",
-        vairant: ToastVariants.error,
-      );
-      return;
+  Future<void> updateAllAllocations() async {
+    Map<String, int> amountsToUpdate = {};
+    for (final entry in allocationControllers.entries) {
+      final employeeId = entry.key;
+      final controller = entry.value;
+      final int? amount = int.tryParse(controller.text.trim());
+      if (amount == null || amount < 0) {
+        AppUtils.showToast(
+          label: "Invalid amount for some employees",
+          vairant: ToastVariants.error,
+        );
+        return;
+      }
+
+      final lastValue = _lastAllocationValues[employeeId];
+      if (amount != lastValue) {
+        amountsToUpdate[employeeId] = amount;
+      }
     }
-    if (amount < 0) {
+
+    if (amountsToUpdate.isEmpty) {
       AppUtils.showToast(
-        label: "Amount cannot be negative",
+        label: "No changes to save",
         vairant: ToastVariants.error,
       );
       return;
@@ -167,13 +176,12 @@ class ProjectMembersController extends GetxController {
     isActionLoading.value = true;
     update();
     try {
-      await _projectRepository.updateMemberAllocation(
+      await _projectRepository.updateAllMembersAllocations(
         projectId: projectId,
-        employeeId: employeeId,
-        newAmount: amount,
+        allocationsToUpdate: amountsToUpdate,
       );
       AppUtils.showToast(
-        label: "Allocation updated",
+        label: "Allocations updated",
         vairant: ToastVariants.success,
       );
     } catch (e) {
@@ -186,6 +194,48 @@ class ProjectMembersController extends GetxController {
       update();
     }
   }
+
+  // Future<void> updateAllocation(String employeeId) async {
+  //   final controller = allocationControllers[employeeId];
+  //   if (controller == null) return;
+  //   final int? amount = int.tryParse(controller.text.trim());
+  //   if (amount == null) {
+  //     AppUtils.showToast(
+  //       label: "Enter a valid amount",
+  //       vairant: ToastVariants.error,
+  //     );
+  //     return;
+  //   }
+  //   if (amount < 0) {
+  //     AppUtils.showToast(
+  //       label: "Amount cannot be negative",
+  //       vairant: ToastVariants.error,
+  //     );
+  //     return;
+  //   }
+
+  //   isActionLoading.value = true;
+  //   update();
+  //   try {
+  //     await _projectRepository.updateMemberAllocation(
+  //       projectId: projectId,
+  //       employeeId: employeeId,
+  //       newAmount: amount,
+  //     );
+  //     AppUtils.showToast(
+  //       label: "Allocation updated",
+  //       vairant: ToastVariants.success,
+  //     );
+  //   } catch (e) {
+  //     AppUtils.showToast(
+  //       label: AppUtils.getFirebaseErrorMessage(message: e.toString()),
+  //       vairant: ToastVariants.error,
+  //     );
+  //   } finally {
+  //     isActionLoading.value = false;
+  //     update();
+  //   }
+  // }
 
   Future<void> updateProjectBudget() async {
     final int? amount = int.tryParse(projectBudgetController.text.trim());
